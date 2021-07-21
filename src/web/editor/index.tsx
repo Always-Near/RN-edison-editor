@@ -1,12 +1,13 @@
 import { Buffer } from "buffer";
+import Delta from "quill-delta";
 import React, { createRef } from "react";
 import ReactQuill from "react-quill";
-import Delta from "quill-delta";
-import _ from "underscore";
 import "react-quill/dist/quill.snow.css";
+import _ from "underscore";
 import { EventName, FormatType } from "../../constants";
+import "./formats/image";
 import "./styles.less";
-import { format, getActiveStyles, addImage } from "./utils";
+import { addImage, format, getActiveStyles } from "./utils";
 
 type State = {
   html: string;
