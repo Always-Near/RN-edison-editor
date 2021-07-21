@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "webpack serve -c ./config/webpack.dev.js",
     "dev-with-host": "webpack serve -c ./config/webpack.dev.js --host 0.0.0.0",
-    "build": "webpack -c ./config/webpack.pro.js && yarn tsc"
+    "build": "rimraf lib && webpack -c ./config/webpack.pro.js && yarn tsc"
   },
   "homepage": "https://github.com/Always-Near/RN-edison-editor.git",
   "keywords": [
