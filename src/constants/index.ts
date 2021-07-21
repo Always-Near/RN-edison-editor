@@ -7,9 +7,7 @@ export const EventName = {
   EditPosition: "editPosition",
   OnFocus: "onFocus",
   OnBlur: "onBlur",
-  OnPastedFiles: "onPastedFiles",
-  OnPastedLocalFiles: "onPastedLocalFiles",
-  OnDroppedFiles: "onDroppedFiles",
+  OnPastedImage: "onPastedImage",
 } as const;
 
 export const BaseInlineStyles = {

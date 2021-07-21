@@ -145,3 +145,15 @@ export function getActiveStyles(quill: Quill | null) {
   });
   return activeStyles;
 }
+
+export function addImage(quill: Quill, path: string) {
+  const range = quill.getSelection();
+  if (!range) {
+    return;
+  }
+  const { index, length } = range;
+  if (length != 0) {
+    quill.deleteText(index, length, "user");
+  }
+  quill.insertEmbed(index, "image", path);
+}

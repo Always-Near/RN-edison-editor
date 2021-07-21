@@ -1,10 +1,12 @@
 import { Buffer } from "buffer";
 import React, { createRef } from "react";
 import ReactQuill from "react-quill";
+import Delta from "quill-delta";
+import _ from "underscore";
 import "react-quill/dist/quill.snow.css";
 import { EventName, FormatType } from "../../constants";
 import "./styles.less";
-import { format, getActiveStyles } from "./utils";
+import { format, getActiveStyles, addImage } from "./utils";
 
 type State = {
   html: string;
@@ -40,6 +42,7 @@ class Editor extends React.Component<any, State> {
   componentDidMount() {
     this.postMessage(EventName.IsMounted, true);
     window.format = this.format;
+    window.addImage = this.addImage;
     window.setDefaultValue = this.setDefaultValue;
     window.setStyle = this.setStyle;
     window.setIsDarkMode = this.setIsDarkMode;
@@ -64,7 +67,7 @@ class Editor extends React.Component<any, State> {
       }
     });
 
-    this.onHeightChange();
+    this.onHeightChangeDebounce();
   }
 
   private postMessage = (type: string, data: any) => {
@@ -92,15 +95,15 @@ class Editor extends React.Component<any, State> {
     this.checkContentIsChange();
     this.setState({ html }, () => {
       this.postMessage(EventName.EditorChange, html);
-      this.onActiveStyleChange();
-      this.onHeightChange();
-      this.onSelectionPositionChange();
+      this.onActiveStyleChangeDebounce();
+      this.onHeightChangeDebounce();
+      this.onSelectionPositionChangeDebounce();
     });
   };
 
   private onChangeSelection = () => {
-    this.onActiveStyleChange();
-    this.onSelectionPositionChange();
+    this.onActiveStyleChangeDebounce();
+    this.onSelectionPositionChangeDebounce();
   };
 
   private onActiveStyleChange = () => {
@@ -108,6 +111,11 @@ class Editor extends React.Component<any, State> {
     const activeStyles = getActiveStyles(quill);
     this.postMessage(EventName.ActiveStyleChange, activeStyles);
   };
+
+  private onActiveStyleChangeDebounce = _.debounce(
+    this.onActiveStyleChange,
+    100
+  );
 
   private onHeightChange = () => {
     const newHeight = document.body.scrollHeight;
@@ -117,6 +125,8 @@ class Editor extends React.Component<any, State> {
     this.height = newHeight;
     this.postMessage(EventName.SizeChange, newHeight);
   };
+
+  private onHeightChangeDebounce = _.debounce(this.onHeightChange, 100);
 
   private onSelectionPositionChange = () => {
     const quill = this.quillRef.current && this.quillRef.current.getEditor();
@@ -147,6 +157,11 @@ class Editor extends React.Component<any, State> {
       this.updateSelectionPosition(e.getBoundingClientRect().bottom);
     }
   };
+
+  private onSelectionPositionChangeDebounce = _.debounce(
+    this.onSelectionPositionChange,
+    100
+  );
 
   private updateSelectionPosition = (position: number) => {
     if (position === this.selectionPosition) {
@@ -219,7 +234,11 @@ class Editor extends React.Component<any, State> {
             value={html}
             onChange={(content) => this.onChange(content)}
             onChangeSelection={this.onChangeSelection}
-            modules={{}}
+            modules={{
+              clipboard: {
+                matchers: [["IMG", this.matcherForImage]],
+              },
+            }}
             onFocus={this.onFocus}
             onBlur={this.onBlur}
           />
@@ -234,9 +253,28 @@ class Editor extends React.Component<any, State> {
       return;
     }
     format(quill, style);
-    setTimeout(() => {
-      this.onActiveStyleChange();
-    }, 100);
+    this.onActiveStyleChangeDebounce();
+  };
+
+  private addImage = (path: string) => {
+    const quill = this.quillRef.current && this.quillRef.current.getEditor();
+    if (!quill) {
+      return;
+    }
+    addImage(quill, path);
+  };
+
+  private matcherForImage = (node: Node, delta: Delta) => {
+    const el = node as HTMLImageElement;
+    const src = el.getAttribute("src");
+    if (!src) {
+      return new Delta();
+    }
+    if (src.startsWith("http")) {
+      return delta;
+    }
+    this.postMessage(EventName.OnPastedImage, src);
+    return new Delta();
   };
 }
 

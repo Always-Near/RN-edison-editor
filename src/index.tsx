@@ -63,6 +63,7 @@ copyFile();
 // It must be consistent with `web/types.d.ts`
 const InjectScriptName = {
   Format: "format",
+  AddImage: "addImage",
   SetDefaultValue: "setDefaultValue",
   SetStyle: "setStyle",
   SetIsDarkMode: "setIsDarkMode",
@@ -90,9 +91,7 @@ type PropTypes = {
   editPosition?: (pos: number) => void;
   onEditorChange?: (content: string) => void;
   onContentChange?: () => void;
-  onPastedFiles?: (files: File[]) => void;
-  onPastedLocalFiles?: (paths: string[]) => void;
-  onDroppedFiles?: (files: File[]) => void;
+  onPastedImage?: (src: string) => void;
   onBlur?: () => void;
   onFocus?: () => void;
   onError?: (error: WebViewError) => void;
@@ -190,9 +189,7 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
       onBlur,
       onFocus,
       onContentChange,
-      onPastedFiles,
-      onPastedLocalFiles,
-      onDroppedFiles,
+      onPastedImage,
     } = this.props;
     try {
       const {
@@ -235,16 +232,8 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
         onContentChange();
         return;
       }
-      if (type === EventName.OnPastedFiles && onPastedFiles) {
-        onPastedFiles(data as File[]);
-        return;
-      }
-      if (type === EventName.OnPastedLocalFiles && onPastedLocalFiles) {
-        onPastedLocalFiles(data as string[]);
-        return;
-      }
-      if (type === EventName.OnDroppedFiles && onDroppedFiles) {
-        onDroppedFiles(data as File[]);
+      if (type === EventName.OnPastedImage && onPastedImage) {
+        onPastedImage(data);
         return;
       }
     } catch (err) {}
@@ -310,6 +299,10 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
 
   setStyle = (style: FormatType) => {
     this.executeScript(InjectScriptName.Format, style);
+  };
+
+  addImage = (src: string) => {
+    this.executeScript(InjectScriptName.AddImage, src);
   };
 
   getEditorState = () => {
