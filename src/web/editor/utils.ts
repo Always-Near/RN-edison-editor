@@ -9,6 +9,12 @@ import {
   ClearStyle,
 } from "../../constants";
 
+const AllInline: string[] = [
+  ...Object.values(BaseInlineStyles),
+  ...Object.values(SpecialInlineStyles),
+  ...Object.values(SpecialKeepInlineStyles),
+];
+
 function clean(quill: Quill) {
   const range = quill.getSelection();
   if (!range) {
@@ -18,7 +24,7 @@ function clean(quill: Quill) {
     const formats = quill.getFormat();
     Object.keys(formats).forEach((name) => {
       // Clean functionality in existing apps only clean inline formats
-      if (Parchment.query(name, Parchment.Scope.INLINE) != null) {
+      if (AllInline.includes(name)) {
         quill.format(name, false);
       }
     });
@@ -89,8 +95,6 @@ export function format(quill: Quill, style: FormatType) {
 
   for (const key in SpecialInlineStyles) {
     if (style.startsWith(key)) {
-      if (key === "BackgroundColor") {
-      }
       const formatType =
         SpecialInlineStyles[key as keyof typeof SpecialInlineStyles];
       const formatValue = style.slice(key.length + 1);

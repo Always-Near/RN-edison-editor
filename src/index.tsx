@@ -213,6 +213,7 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
       }
       if (type === EventName.ActiveStyleChange) {
         onActiveStyleChange && onActiveStyleChange(data);
+        return;
       }
       if (type === EventName.EditPosition && editPosition) {
         editPosition(data);

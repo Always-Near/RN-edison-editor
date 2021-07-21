@@ -219,15 +219,10 @@ class Editor extends React.Component<any, State> {
             value={html}
             onChange={(content) => this.onChange(content)}
             onChangeSelection={this.onChangeSelection}
-            modules={{
-              toolbar: {
-                container: "#toolbar",
-              },
-            }}
+            modules={{}}
             onFocus={this.onFocus}
             onBlur={this.onBlur}
           />
-          <div id="toolbar" style={{ display: "none" }}></div>
         </div>
       </>
     );
