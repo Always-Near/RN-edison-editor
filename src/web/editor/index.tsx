@@ -285,8 +285,21 @@ class Editor extends React.Component<any, State> {
     if (src.startsWith("http")) {
       return delta;
     }
-    this.postMessage(EventName.OnPastedImage, src);
+    this.onPasteLocalImage(src);
     return new Delta();
+  };
+
+  private onPasteLocalImage = (url: string) => {
+    fetch(url).then((res) => {
+      res.blob().then((blob) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onloadend = () => {
+          const base64data = reader.result;
+          this.postMessage(EventName.OnPastedImage, base64data);
+        };
+      });
+    });
   };
 }
 
