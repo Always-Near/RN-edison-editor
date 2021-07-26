@@ -7,7 +7,13 @@ import _ from "underscore";
 import { EventName, FormatType } from "../../constants";
 import "./formats/image";
 import "./styles.less";
-import { addImage, format, getActiveStyles } from "./utils";
+import {
+  addImage,
+  EventListener,
+  EventListenerNames,
+  format,
+  getActiveStyles,
+} from "./utils";
 
 type State = {
   html: string;
@@ -66,6 +72,11 @@ class Editor extends React.Component<any, State> {
       if (clickDom?.tagName === "HTML") {
         this.focusTextEditor();
       }
+    });
+
+    // resize the editor height after image loaded
+    EventListener.addEventListener(EventListenerNames.ImgOnload, () => {
+      this.onHeightChangeDebounce();
     });
 
     this.onHeightChangeDebounce();

@@ -160,3 +160,32 @@ export function addImage(quill: Quill, path: string) {
   }
   quill.insertEmbed(index, "image", path);
 }
+
+export const EventListenerNames = {
+  ImgOnload: "ImgOnload",
+} as const;
+
+type Event = typeof EventListenerNames[keyof typeof EventListenerNames];
+type Listener = () => void;
+
+class EdisonEventListener {
+  listeners: Map<Event, Listener[]>;
+  constructor() {
+    this.listeners = new Map();
+  }
+
+  addEventListener = (event: Event, listener: Listener) => {
+    const oldList = this.listeners.get(event) || [];
+    const newList = [...oldList, listener];
+    this.listeners.set(event, newList);
+  };
+
+  emitEvent = (event: Event) => {
+    const listenerList = this.listeners.get(event) || [];
+    listenerList.forEach((cb) => {
+      cb();
+    });
+  };
+}
+
+export const EventListener = new EdisonEventListener();
