@@ -115,7 +115,10 @@ export function getActiveStyles(quill: Quill | null) {
     return activeStyles;
   }
   const range = quill.getSelection();
-  const formats = quill.getFormat(range || undefined);
+  if (!range) {
+    return activeStyles;
+  }
+  const formats = quill.getFormat(range);
   Object.keys(formats).forEach((key) => {
     const value = formats[key];
     if (!value) {
