@@ -283,7 +283,7 @@ class Editor extends React.Component<any, State> {
     if (!src) {
       return new Delta();
     }
-    if (src.startsWith("http")) {
+    if (!src.startsWith("blob:")) {
       return delta;
     }
     this.onPasteLocalImage(src);

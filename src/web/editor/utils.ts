@@ -1,4 +1,3 @@
-import Parchment from "parchment";
 import { Quill } from "react-quill";
 import {
   FormatType,
