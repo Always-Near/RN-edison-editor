@@ -6,6 +6,7 @@ import "react-quill/dist/quill.snow.css";
 import _ from "underscore";
 import { EventName, FormatType } from "../../constants";
 import "./formats/image";
+import "./formats/title";
 import "./styles.less";
 import {
   addImage,
