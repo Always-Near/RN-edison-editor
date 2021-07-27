@@ -283,11 +283,18 @@ class Editor extends React.Component<any, State> {
     if (!src) {
       return new Delta();
     }
-    if (!src.startsWith("blob:")) {
+    if (/^https?:\/\//.test(src) || /^data:image\/.+;base64/.test(src)) {
+      //src does not rely on local images
       return delta;
     }
-    this.onPasteLocalImage(src);
-    return new Delta();
+    if (/^blob:/.test(src)) {
+      // pasted image in ios
+      this.onPasteLocalImage(src);
+      return new Delta();
+    }
+    // image is a local path
+    this.postMessage(EventName.OnPastedImage, src);
+    return delta;
   };
 
   private onPasteLocalImage = (url: string) => {
