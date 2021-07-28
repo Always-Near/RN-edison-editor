@@ -7,6 +7,7 @@ import _ from "underscore";
 import { EventName, FormatType } from "../../constants";
 import "./formats/image";
 import "./formats/title";
+import "./formats/table";
 import "./styles.less";
 import {
   addImage,
@@ -249,7 +250,10 @@ class Editor extends React.Component<any, State> {
             onChangeSelection={this.onChangeSelection}
             modules={{
               clipboard: {
-                matchers: [["IMG", this.matcherForImage]],
+                matchers: [
+                  ["IMG", this.matcherForImage],
+                  ["TABLE", this.matcherForTable],
+                ],
               },
             }}
             onFocus={this.onFocus}
@@ -259,6 +263,16 @@ class Editor extends React.Component<any, State> {
       </>
     );
   }
+
+  private matcherForTable = (node: Element, delta: Delta) => {
+    return new Delta([
+      {
+        insert: {
+          table: node.innerHTML,
+        },
+      },
+    ]);
+  };
 
   private format = (style: FormatType) => {
     const quill = this.quillRef.current && this.quillRef.current.getEditor();
@@ -277,9 +291,8 @@ class Editor extends React.Component<any, State> {
     addImage(quill, path);
   };
 
-  private matcherForImage = (node: Node, delta: Delta) => {
-    const el = node as HTMLImageElement;
-    const src = el.getAttribute("src");
+  private matcherForImage = (node: Element, delta: Delta) => {
+    const src = node.getAttribute("src");
     if (!src) {
       return new Delta();
     }

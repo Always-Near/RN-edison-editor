@@ -11,4 +11,4 @@ class Title extends Inline {
 Title.blotName = "title";
 Title.tagName = "TITLE";
 
-Quill.register("formats/disable-title", Title);
+Quill.register(Title);
