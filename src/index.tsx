@@ -204,8 +204,12 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
         return;
       }
       if (type === EventName.EditorChange) {
-        onEditorChange && onEditorChange(data.replace(/(\r\n|\n|\r)/gm, ""));
-        this.setState({ editorState: data.replace(/(\r\n|\n|\r)/gm, "") });
+        this.setState(
+          { editorState: data.replace(/(\r\n|\n|\r)/gm, "") },
+          () => {
+            onEditorChange && onEditorChange(this.state.editorState);
+          }
+        );
         return;
       }
       if (type === EventName.ActiveStyleChange) {

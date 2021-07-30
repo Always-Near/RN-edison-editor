@@ -19,7 +19,6 @@ import {
 
 type State = {
   html: string;
-  contentIsChange: boolean;
   placeholder: string;
   style: React.CSSProperties;
   isDarkMode: boolean;
@@ -35,11 +34,13 @@ class Editor extends React.Component<any, State> {
   private quillRef = createRef<ReactQuill>();
   private height: number;
   private selectionPosition: number;
+  private contentIsChangeFlag: boolean = false;
+  private contentStartChangeFlag: boolean = false;
+
   constructor(props: any) {
     super(props);
     this.state = {
       html: "",
-      contentIsChange: false,
       placeholder: "",
       style: {},
       isDarkMode: false,
@@ -96,22 +97,24 @@ class Editor extends React.Component<any, State> {
   };
 
   private checkContentIsChange = () => {
-    const { contentIsChange } = this.state;
-    if (contentIsChange) {
+    if (this.contentIsChangeFlag) {
       return;
     }
-
-    this.setState({ contentIsChange: true });
+    if (!this.contentStartChangeFlag) {
+      return;
+    }
+    this.contentIsChangeFlag = true;
     this.postMessage(EventName.ContentChange, true);
   };
 
-  private onChange = (html: string) => {
+  private onChange = (html: string, callback?: () => void) => {
     this.checkContentIsChange();
     this.setState({ html }, () => {
       this.postMessage(EventName.EditorChange, html);
       this.onActiveStyleChangeDebounce();
       this.onHeightChangeDebounce();
       this.onSelectionPositionChangeDebounce();
+      callback && callback();
     });
   };
 
@@ -191,7 +194,11 @@ class Editor extends React.Component<any, State> {
         const htmlStr = Buffer.from(html, "base64").toString("utf-8");
         // clear the meta to keep style
         const reg = /<meta\s+name=(['"\s]?)viewport\1\s+content=[^>]*>/gi;
-        this.onChange(htmlStr.replace(reg, ""));
+        this.onChange(htmlStr.replace(reg, ""), () => {
+          setTimeout(() => {
+            this.contentStartChangeFlag = true;
+          }, 300);
+        });
       }
     } catch (e) {
       console.error(e);
