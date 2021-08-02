@@ -158,6 +158,7 @@ export function addImage(quill: Quill, path: string) {
     quill.deleteText(index, length, "user");
   }
   quill.insertEmbed(index, "image", path);
+  quill.setSelection(index + 1, 0, "user");
 }
 
 export const EventListenerNames = {
