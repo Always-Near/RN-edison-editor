@@ -154,9 +154,9 @@ class Editor extends React.Component<any, State> {
     }
     // returns a value of 0 on empty lines
     const pos = window
-    .getSelection()
-    ?.getRangeAt(0)
-    .getBoundingClientRect()?.bottom;
+      .getSelection()
+      ?.getRangeAt(0)
+      .getBoundingClientRect()?.bottom;
     if (pos) {
       this.updateSelectionPosition(pos);
       return;
