@@ -153,8 +153,10 @@ class Editor extends React.Component<any, State> {
       return;
     }
     // returns a value of 0 on empty lines
-    const pos = window.getSelection()?.getRangeAt(0).getBoundingClientRect()
-      ?.bottom;
+    const pos = window
+    .getSelection()
+    ?.getRangeAt(0)
+    .getBoundingClientRect()?.bottom;
     if (pos) {
       this.updateSelectionPosition(pos);
       return;
