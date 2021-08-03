@@ -8,6 +8,7 @@ import { EventName, FormatType } from "../../constants";
 import "./formats/image";
 import "./formats/title";
 import "./formats/table";
+import "./formats/blockquote";
 import "./styles.less";
 import {
   addImage,
@@ -260,6 +261,7 @@ class Editor extends React.Component<any, State> {
                 matchers: [
                   ["IMG", this.matcherForImage],
                   ["TABLE", this.matcherForTable],
+                  ["BLOCKQUOTE", this.matcherForBlockQuote],
                 ],
               },
             }}
@@ -276,6 +278,16 @@ class Editor extends React.Component<any, State> {
       {
         insert: {
           table: node.innerHTML,
+        },
+      },
+    ]);
+  };
+
+  private matcherForBlockQuote = (node: Element, delta: Delta) => {
+    return new Delta([
+      {
+        insert: {
+          blockquote: node.innerHTML,
         },
       },
     ]);
