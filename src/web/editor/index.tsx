@@ -16,6 +16,7 @@ import {
   EventListenerNames,
   format,
   getActiveStyles,
+  clearHTML,
 } from "./utils";
 
 type State = {
@@ -194,8 +195,8 @@ class Editor extends React.Component<any, State> {
       if (html) {
         const htmlStr = Buffer.from(html, "base64").toString("utf-8");
         // clear the meta to keep style
-        const reg = /<meta\s+name=(['"\s]?)viewport\1\s+content=[^>]*>/gi;
-        this.onChange(htmlStr.replace(reg, ""), () => {
+        const clearHtml = clearHTML(htmlStr);
+        this.onChange(clearHtml, () => {
           setTimeout(() => {
             this.contentStartChangeFlag = true;
           }, 300);

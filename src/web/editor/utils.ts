@@ -189,3 +189,19 @@ class EdisonEventListener {
 }
 
 export const EventListener = new EdisonEventListener();
+
+export function clearHTML(html: string) {
+  const domParser = new DOMParser();
+  try {
+    const doc = domParser.parseFromString(html, "text/html");
+    const allHead = doc.querySelectorAll("head");
+    const allMeta = doc.querySelectorAll("meta");
+    const allStyle = doc.querySelectorAll("style");
+    [...allHead, ...allMeta, ...allStyle].forEach((el) => {
+      el.remove();
+    });
+    return doc.body.innerHTML.trim();
+  } catch (error) {
+    return html;
+  }
+}
