@@ -21,7 +21,6 @@ import {
 
 type State = {
   html: string;
-  placeholder: string;
   style: React.CSSProperties;
   isDarkMode: boolean;
 };
@@ -43,7 +42,6 @@ class Editor extends React.Component<any, State> {
     super(props);
     this.state = {
       html: "",
-      placeholder: "",
       style: {},
       isDarkMode: false,
     };
@@ -221,7 +219,14 @@ class Editor extends React.Component<any, State> {
   };
 
   private setEditorPlaceholder = (placeholder: string) => {
-    this.setState({ placeholder });
+    const quill = this.quillRef.current?.getEditor();
+    if (quill) {
+      quill.root.dataset.placeholder = placeholder;
+    } else {
+      setTimeout(() => {
+        this.setEditorPlaceholder(placeholder);
+      }, 100);
+    }
   };
 
   private focusTextEditor = () => {
@@ -241,8 +246,7 @@ class Editor extends React.Component<any, State> {
   };
 
   render() {
-    const { placeholder, html, style, isDarkMode } = this.state;
-
+    const { html, style, isDarkMode } = this.state;
     return (
       <>
         <style>{isDarkMode ? darkModeStyle : ""}</style>
@@ -253,7 +257,6 @@ class Editor extends React.Component<any, State> {
           <ReactQuill
             ref={this.quillRef}
             theme="snow"
-            placeholder={placeholder}
             value={html}
             onChange={(content) => this.onChange(content)}
             onChangeSelection={this.onChangeSelection}
