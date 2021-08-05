@@ -29,6 +29,9 @@ const darkModeStyle = `
   :root {
     filter: invert(100%);
   }
+  body {
+    background: #ededed;
+  }
 `;
 
 class Editor extends React.Component<any, State> {
