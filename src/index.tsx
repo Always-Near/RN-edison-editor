@@ -348,7 +348,7 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
             position: "absolute",
             left: 0,
             right: 0,
-            top: 150,
+            top: 0,
             height: 2500,
             alignItems: "center",
             justifyContent: "center",
