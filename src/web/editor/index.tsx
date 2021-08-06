@@ -5,18 +5,19 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import _ from "underscore";
 import { EventName, FormatType } from "../../constants";
-import "./formats/image";
-import "./formats/title";
-import "./formats/table";
+import "./formats/block";
 import "./formats/blockquote";
+import "./formats/image";
+import "./formats/table";
+import "./formats/title";
 import "./styles.less";
 import {
   addImage,
+  clearHTML,
   EventListener,
   EventListenerNames,
   format,
   getActiveStyles,
-  clearHTML,
 } from "./utils";
 
 type State = {

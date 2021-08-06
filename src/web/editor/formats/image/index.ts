@@ -20,4 +20,4 @@ class Image extends DefaultImage {
 Image.blotName = "image";
 Image.tagName = "IMG";
 
-Quill.register("formats/image", Image);
+Quill.register(Image);
