@@ -122,12 +122,14 @@ img.fullwidth {
 }
 
 .dark_mode {
-  * {
-    background-color: inherit;
-  }
+  filter: invert(100%);
 
   img:not([src*=".svg"]),
   video {
     filter: invert(100%);
+  }
+
+  * {
+    background-color: inherit;
   }
 }

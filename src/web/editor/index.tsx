@@ -27,11 +27,14 @@ type State = {
 };
 
 const darkModeStyle = `
-  :root {
-    filter: invert(100%);
+  html, body {
+    background-color: #121212 !important;
   }
-  body {
-    background: #ededed;
+`;
+
+const lightModeStyle = `
+  html, body {
+    background-color: #fffffe !important;
   }
 `;
 
@@ -253,7 +256,7 @@ class Editor extends React.Component<any, State> {
     const { html, style, isDarkMode } = this.state;
     return (
       <>
-        <style>{isDarkMode ? darkModeStyle : ""}</style>
+        <style>{isDarkMode ? darkModeStyle : lightModeStyle}</style>
         <div
           className={`compose-editor ${isDarkMode ? "dark_mode" : ""}`}
           style={style}
