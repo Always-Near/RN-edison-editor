@@ -85,6 +85,7 @@ type PropTypes = {
   defaultValue?: string;
   placeholder?: string;
   isDarkMode?: boolean;
+  androidLayerType?: "none" | "software" | "hardware";
   onEditorReady?: () => void;
   onActiveStyleChange?: (styles: FormatType[]) => void;
   onSizeChange?: (size: number) => void;
@@ -314,7 +315,7 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
   };
 
   render() {
-    const { style = { flex: 1 } } = this.props;
+    const { style = { flex: 1 }, androidLayerType } = this.props;
     return (
       <>
         <WebView
@@ -329,6 +330,7 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
           contentMode={"mobile"}
           onError={this.onError}
           scrollEnabled={false}
+          androidLayerType={androidLayerType}
         />
         {Platform.OS === "android" ? (
           <TextInput
