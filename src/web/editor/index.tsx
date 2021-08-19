@@ -314,7 +314,6 @@ class Editor extends React.Component<any, State> {
   };
 
   private addImage = (path: string) => {
-    this.postMessage('DEBUGGER', 'PATH' + path)
     const quill = this.quillRef.current && this.quillRef.current.getEditor();
     if (!quill) {
       return;
