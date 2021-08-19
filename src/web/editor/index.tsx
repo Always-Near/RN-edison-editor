@@ -314,6 +314,7 @@ class Editor extends React.Component<any, State> {
   };
 
   private addImage = (path: string) => {
+    this.postMessage('DEBUGGER', 'PATH' + path)
     const quill = this.quillRef.current && this.quillRef.current.getEditor();
     if (!quill) {
       return;
@@ -327,7 +328,7 @@ class Editor extends React.Component<any, State> {
       return new Delta();
     }
     if (/^https?:\/\//.test(src) || /^data:image\/.+;base64/.test(src)) {
-      //src does not rely on local images
+      this.postMessage(EventName.OnPastedImage, src);
       return delta;
     }
     if (/^blob:/.test(src)) {
