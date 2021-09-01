@@ -315,7 +315,7 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
   };
 
   render() {
-    const { style = { flex: 1 }, androidLayerType } = this.props;
+    const { style = { flex: 1 }, androidLayerType, isDarkMode } = this.props;
     return (
       <>
         <WebView
@@ -330,6 +330,7 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
           contentMode={"mobile"}
           onError={this.onError}
           scrollEnabled={false}
+          forceDarkOn={isDarkMode}
           androidLayerType={androidLayerType}
         />
         {Platform.OS === "android" ? (
