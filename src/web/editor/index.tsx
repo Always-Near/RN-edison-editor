@@ -24,6 +24,7 @@ type State = {
   html: string;
   style: React.CSSProperties;
   isDarkMode: boolean;
+  fontSize: number;
 };
 
 const darkModeStyle = `
@@ -38,6 +39,16 @@ const lightModeStyle = `
   }
 `;
 
+const fontSizeStyle = (size: number) => {
+  return `
+  #root .ql-container {
+    font-size: ${size}px;
+  }
+`;
+};
+
+const DefaultFontSize = 16;
+
 class Editor extends React.Component<any, State> {
   private quillRef = createRef<ReactQuill>();
   private height: number;
@@ -51,6 +62,7 @@ class Editor extends React.Component<any, State> {
       html: "",
       style: {},
       isDarkMode: false,
+      fontSize: DefaultFontSize,
     };
     this.height = 0;
     this.selectionPosition = 0;
@@ -63,6 +75,7 @@ class Editor extends React.Component<any, State> {
     window.setDefaultValue = this.setDefaultValue;
     window.setStyle = this.setStyle;
     window.setIsDarkMode = this.setIsDarkMode;
+    window.setFontSize = this.setFontSize;
     window.setEditorPlaceholder = this.setEditorPlaceholder;
     window.focusTextEditor = this.focusTextEditor;
     window.blurTextEditor = this.blurTextEditor;
@@ -225,6 +238,10 @@ class Editor extends React.Component<any, State> {
     this.setState({ isDarkMode: isDarkMode === "true" });
   };
 
+  private setFontSize = (fontSize: string) => {
+    this.setState({ fontSize: parseInt(fontSize) || DefaultFontSize });
+  };
+
   private setEditorPlaceholder = (placeholder: string) => {
     const quill = this.quillRef.current?.getEditor();
     if (quill) {
@@ -253,10 +270,13 @@ class Editor extends React.Component<any, State> {
   };
 
   render() {
-    const { html, style, isDarkMode } = this.state;
+    const { html, style, isDarkMode, fontSize } = this.state;
     return (
       <>
-        <style>{isDarkMode ? darkModeStyle : lightModeStyle}</style>
+        <style>
+          {isDarkMode ? darkModeStyle : lightModeStyle}
+          {fontSizeStyle(fontSize)}
+        </style>
         <div
           className={`compose-editor ${isDarkMode ? "dark_mode" : ""}`}
           style={style}

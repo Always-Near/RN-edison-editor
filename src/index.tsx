@@ -67,6 +67,7 @@ const InjectScriptName = {
   SetDefaultValue: "setDefaultValue",
   SetStyle: "setStyle",
   SetIsDarkMode: "setIsDarkMode",
+  SetFontSize: "setFontSize",
   SetEditorPlaceholder: "setEditorPlaceholder",
   FocusTextEditor: "focusTextEditor",
   BlurTextEditor: "blurTextEditor",
@@ -85,6 +86,7 @@ type PropTypes = {
   defaultValue?: string;
   placeholder?: string;
   isDarkMode?: boolean;
+  defaultFontSize?: number;
   androidLayerType?: "none" | "software" | "hardware";
   onEditorReady?: () => void;
   onActiveStyleChange?: (styles: FormatType[]) => void;
@@ -135,6 +137,15 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
       this.executeScript(
         InjectScriptName.SetIsDarkMode,
         nextProps.isDarkMode.toString()
+      );
+    }
+    if (
+      nextProps.defaultFontSize !== undefined &&
+      nextProps.defaultFontSize !== this.props.defaultFontSize
+    ) {
+      this.executeScript(
+        InjectScriptName.SetFontSize,
+        nextProps.defaultFontSize.toString()
       );
     }
     if (
@@ -258,6 +269,7 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
       defaultValue,
       contentStyle,
       isDarkMode = false,
+      defaultFontSize,
       onEditorReady = () => null,
     } = this.props;
 
@@ -275,7 +287,12 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
       this.executeScript(InjectScriptName.SetEditorPlaceholder, placeholder);
     }
     this.executeScript(InjectScriptName.SetIsDarkMode, isDarkMode.toString());
-
+    if (defaultFontSize) {
+      this.executeScript(
+        InjectScriptName.SetFontSize,
+        defaultFontSize.toString()
+      );
+    }
     onEditorReady();
     setTimeout(() => {
       Animated.timing(this.loadingOpacity, {
