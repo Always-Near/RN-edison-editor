@@ -135,6 +135,17 @@ class Editor extends React.Component<any, State> {
       this.onHeightChangeDebounce();
       this.onSelectionPositionChangeDebounce();
       callback && callback();
+      this.addEventListenerForImageInTable()
+    });
+  };
+
+  private addEventListenerForImageInTable = () => {
+    const images = Array.from(document.body.querySelectorAll("table img"));
+
+    images.forEach((ele) => {
+      ele.addEventListener("load", ()=>{
+        EventListener.emitEvent(EventListenerNames.ImgOnload);
+      });
     });
   };
 
