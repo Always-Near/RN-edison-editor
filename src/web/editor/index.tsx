@@ -217,12 +217,23 @@ class Editor extends React.Component<any, State> {
         this.onChange(clearHtml, () => {
           setTimeout(() => {
             this.contentStartChangeFlag = true;
+            this.addEventListenerForImageInTable()
           }, 300);
         });
       }
     } catch (e) {
       console.error(e);
     }
+  };
+
+  private addEventListenerForImageInTable = () => {
+    const images = Array.from(document.body.querySelectorAll("table img"));
+
+    images.forEach((ele) => {
+      ele.addEventListener("load", ()=>{
+        EventListener.emitEvent(EventListenerNames.ImgOnload);
+      });
+    });
   };
 
   private setStyle = (style: string) => {
