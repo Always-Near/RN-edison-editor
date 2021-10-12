@@ -331,8 +331,16 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
     return this.state.editorState;
   };
 
+  shouldForceDarkOn = () => {
+    const { isDarkMode } = this.props;
+    if (Platform.OS === "android" && Platform.Version >= 31) {
+      return false;
+    }
+    return isDarkMode;
+  };
+
   render() {
-    const { style = { flex: 1 }, androidLayerType, isDarkMode } = this.props;
+    const { style = { flex: 1 }, androidLayerType } = this.props;
     return (
       <>
         <WebView
@@ -347,7 +355,7 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
           contentMode={"mobile"}
           onError={this.onError}
           scrollEnabled={false}
-          forceDarkOn={isDarkMode}
+          forceDarkOn={this.shouldForceDarkOn()}
           androidLayerType={androidLayerType}
         />
         {Platform.OS === "android" ? (
