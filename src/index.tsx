@@ -333,7 +333,7 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
 
   shouldForceDarkOn = () => {
     const { isDarkMode } = this.props;
-    if (Platform.OS === "android" && Platform.Version >= 31) {
+    if (Platform.OS === "android" && Platform.Version >= 30) {
       return false;
     }
     return isDarkMode;
