@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { ViewStyle, Animated, Platform, TextInput } from "react-native";
-import WebView, { WebViewMessageEvent } from "react-native-webview";
+import WebView, {
+  WebViewMessageEvent,
+  WebViewProps,
+} from "react-native-webview";
 import RNFS from "react-native-fs";
 import { Buffer } from "buffer";
 import {
@@ -11,19 +14,22 @@ import "./index.html";
 import { EventName, FormatType } from "./constants";
 export type { FormatType } from "./constants";
 
-const packageName = "rn-edison-editor";
-const draftJsFileTargetPath = `file://${RNFS.CachesDirectoryPath}/draftjs.html`;
-let draftJsFilePath = draftJsFileTargetPath;
+class Variables {
+  static readonly packageName = "rn-edison-editor";
+  static readonly draftJsFileTargetPath = `file://${RNFS.CachesDirectoryPath}/draftjs.html`;
+  static copyFinish = false;
+  static draftJsFilePath = Variables.draftJsFileTargetPath;
+}
 
 async function copyFileForIos() {
-  const htmlPath = `file://${RNFS.MainBundlePath}/assets/node_modules/${packageName}/lib/index.html`;
+  const htmlPath = `file://${RNFS.MainBundlePath}/assets/node_modules/${Variables.packageName}/lib/index.html`;
   try {
-    const fileHasExists = await RNFS.exists(draftJsFileTargetPath);
+    const fileHasExists = await RNFS.exists(Variables.draftJsFileTargetPath);
     if (fileHasExists) {
-      await RNFS.unlink(draftJsFileTargetPath);
+      await RNFS.unlink(Variables.draftJsFileTargetPath);
     }
-    await RNFS.copyFile(htmlPath, draftJsFileTargetPath);
-    return draftJsFileTargetPath;
+    await RNFS.copyFile(htmlPath, Variables.draftJsFileTargetPath);
+    return Variables.draftJsFileTargetPath;
   } catch (err) {
     // badcase remedy
     return htmlPath;
@@ -31,17 +37,17 @@ async function copyFileForIos() {
 }
 
 async function copyFileForAndroid() {
-  const htmlResPath = `raw/node_modules_${packageName.replace(
+  const htmlResPath = `raw/node_modules_${Variables.packageName.replace(
     /-/g,
     ""
   )}_lib_index.html`;
   try {
-    const fileHasExists = await RNFS.exists(draftJsFileTargetPath);
+    const fileHasExists = await RNFS.exists(Variables.draftJsFileTargetPath);
     if (fileHasExists) {
-      await RNFS.unlink(draftJsFileTargetPath);
+      await RNFS.unlink(Variables.draftJsFileTargetPath);
     }
-    await RNFS.copyFileRes(htmlResPath, draftJsFileTargetPath);
-    return draftJsFileTargetPath;
+    await RNFS.copyFileRes(htmlResPath, Variables.draftJsFileTargetPath);
+    return Variables.draftJsFileTargetPath;
   } catch (err) {
     // badcase remedy
     return `file:///android_res/${htmlResPath}`;
@@ -51,11 +57,12 @@ async function copyFileForAndroid() {
 async function copyFile() {
   if (Platform.OS === "ios") {
     const filePath = await copyFileForIos();
-    draftJsFilePath = filePath;
+    Variables.draftJsFilePath = filePath;
   } else if (Platform.OS === "android") {
     const filePath = await copyFileForAndroid();
-    draftJsFilePath = filePath;
+    Variables.draftJsFilePath = filePath;
   }
+  Variables.copyFinish = true;
 }
 
 copyFile();
@@ -101,7 +108,7 @@ type PropTypes = {
 };
 
 type DraftViewState = {
-  webviewUri: string;
+  webviewSource: WebViewProps["source"];
   editorState: string;
   loading: boolean;
 };
@@ -111,19 +118,22 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
   webviewMounted: boolean = false;
   private webViewRef = React.createRef<WebView>();
   private textInputRef = React.createRef<TextInput>();
+  private maxCheckTime = 100;
   loadingOpacity = new Animated.Value(1);
 
   constructor(props: any) {
     super(props);
     this.state = {
-      webviewUri: "",
+      webviewSource: {
+        html: `<div style="text-align: center; height: 300px; line-height: 300px">loading...</div>`,
+      },
       editorState: "",
       loading: true,
     };
   }
 
   componentDidMount() {
-    this.setState({ webviewUri: draftJsFilePath });
+    this.getDraftJsFilePath();
   }
 
   UNSAFE_componentWillReceiveProps = (nextProps: PropTypes) => {
@@ -157,6 +167,20 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
       );
       this.executeScript(InjectScriptName.SetDefaultValue, formatHtml);
     }
+  };
+
+  private getDraftJsFilePath = () => {
+    this.maxCheckTime = this.maxCheckTime - 1;
+    if (Variables.copyFinish) {
+      this.setState({ webviewSource: { uri: Variables.draftJsFilePath } });
+      return;
+    }
+    if (this.maxCheckTime <= 0) {
+      return;
+    }
+    setTimeout(() => {
+      this.getDraftJsFilePath();
+    }, 200);
   };
 
   private doSomethingAfterMounted = (id: string, func: () => void) => {
@@ -346,7 +370,7 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
         <WebView
           ref={this.webViewRef}
           style={style}
-          source={{ uri: this.state.webviewUri }}
+          source={this.state.webviewSource}
           allowFileAccess
           allowingReadAccessToURL={"file://"}
           keyboardDisplayRequiresUserAction={false}
