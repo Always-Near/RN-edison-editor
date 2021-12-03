@@ -124,9 +124,7 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
   constructor(props: any) {
     super(props);
     this.state = {
-      webviewSource: {
-        html: `<div style="text-align: center; height: 300px; line-height: 300px">loading...</div>`,
-      },
+      webviewSource: undefined,
       editorState: "",
       loading: true,
     };
