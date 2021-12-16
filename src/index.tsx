@@ -369,6 +369,7 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
           ref={this.webViewRef}
           style={style}
           source={this.state.webviewSource}
+          hideKeyboardAccessoryView
           allowFileAccess
           allowingReadAccessToURL={"file://"}
           keyboardDisplayRequiresUserAction={false}
