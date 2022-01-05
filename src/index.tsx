@@ -71,6 +71,7 @@ copyFile();
 const InjectScriptName = {
   Format: "format",
   AddImage: "addImage",
+  AddLink: 'addLink',
   SetDefaultValue: "setDefaultValue",
   SetStyle: "setStyle",
   SetIsDarkMode: "setIsDarkMode",
@@ -347,6 +348,10 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
 
   addImage = (src: string) => {
     this.executeScript(InjectScriptName.AddImage, src);
+  };
+
+  addLink = (text: string, url: string) => {
+    this.executeScript(InjectScriptName.AddLink, JSON.stringify({ text, url }));
   };
 
   getEditorState = () => {

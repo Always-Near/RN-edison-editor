@@ -72,6 +72,7 @@ class Editor extends React.Component<any, State> {
     this.postMessage(EventName.IsMounted, true);
     window.format = this.format;
     window.addImage = this.addImage;
+    window.addLink = this.addLink;
     window.setDefaultValue = this.setDefaultValue;
     window.setStyle = this.setStyle;
     window.setIsDarkMode = this.setIsDarkMode;
@@ -137,6 +138,27 @@ class Editor extends React.Component<any, State> {
       callback && callback();
     });
   };
+
+  private addLink = (str: string) => {
+    const { text, url } = JSON.parse(str)
+    this.blurTextEditor()
+    this.focusTextEditor()
+    const quill = this.quillRef.current && this.quillRef.current.getEditor();
+
+    if (!quill) {
+      return;
+    }
+
+    const range = quill.getSelection();
+    let index = 0
+    if(range) {
+      index = range.index
+      quill.insertText(index, text, 'link', url)
+    } else {
+      quill.insertText(index, text, 'link', url)
+    }
+   
+  }
 
   private onChangeSelection = () => {
     this.onActiveStyleChangeDebounce();
