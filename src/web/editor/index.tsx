@@ -39,6 +39,21 @@ const lightModeStyle = `
   }
 `;
 
+const styleBase = `
+<head>
+  <style>
+    .ql-size-small {
+      font-size: 0.75em;
+    }
+    .ql-size-large {
+      font-size: 1.5em;
+    }
+    .ql-size-huge {
+      font-size: 2.5em;
+    }
+  </style>
+</head>`;
+
 const fontSizeStyle = (size: number) => {
   return `
   #root .ql-container {
@@ -131,7 +146,7 @@ class Editor extends React.Component<any, State> {
   private onChange = (html: string, callback?: () => void) => {
     this.checkContentIsChange();
     this.setState({ html }, () => {
-      this.postMessage(EventName.EditorChange, html);
+      this.postMessage(EventName.EditorChange, styleBase + html);
       this.onActiveStyleChangeDebounce();
       this.onHeightChangeDebounce();
       this.onSelectionPositionChangeDebounce();
@@ -140,9 +155,9 @@ class Editor extends React.Component<any, State> {
   };
 
   private addLink = (str: string) => {
-    const { text, url } = JSON.parse(str)
-    this.blurTextEditor()
-    this.focusTextEditor()
+    const { text, url } = JSON.parse(str);
+    this.blurTextEditor();
+    this.focusTextEditor();
     const quill = this.quillRef.current && this.quillRef.current.getEditor();
 
     if (!quill) {
@@ -150,15 +165,14 @@ class Editor extends React.Component<any, State> {
     }
 
     const range = quill.getSelection();
-    let index = 0
-    if(range) {
-      index = range.index
-      quill.insertText(index, text, 'link', url)
+    let index = 0;
+    if (range) {
+      index = range.index;
+      quill.insertText(index, text, "link", url);
     } else {
-      quill.insertText(index, text, 'link', url)
+      quill.insertText(index, text, "link", url);
     }
-   
-  }
+  };
 
   private onChangeSelection = () => {
     this.onActiveStyleChangeDebounce();
@@ -239,7 +253,7 @@ class Editor extends React.Component<any, State> {
         this.onChange(clearHtml, () => {
           setTimeout(() => {
             this.contentStartChangeFlag = true;
-            this.addEventListenerForImageInTable()
+            this.addEventListenerForImageInTable();
           }, 300);
         });
       }
@@ -252,7 +266,7 @@ class Editor extends React.Component<any, State> {
     const images = Array.from(document.body.querySelectorAll("table img"));
 
     images.forEach((ele) => {
-      ele.addEventListener("load", ()=>{
+      ele.addEventListener("load", () => {
         EventListener.emitEvent(EventListenerNames.ImgOnload);
       });
     });
