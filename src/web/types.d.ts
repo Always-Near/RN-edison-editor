@@ -10,4 +10,5 @@ declare interface Window {
   setEditorPlaceholder: (placeholder: string) => void;
   focusTextEditor: () => void;
   blurTextEditor: () => void;
+  disableInputImage: (disable: string) => void
 }

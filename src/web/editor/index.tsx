@@ -70,6 +70,7 @@ class Editor extends React.Component<any, State> {
   private selectionPosition: number;
   private contentIsChangeFlag: boolean = false;
   private contentStartChangeFlag: boolean = false;
+  private disableImage = false;
 
   constructor(props: any) {
     super(props);
@@ -95,6 +96,7 @@ class Editor extends React.Component<any, State> {
     window.setEditorPlaceholder = this.setEditorPlaceholder;
     window.focusTextEditor = this.focusTextEditor;
     window.blurTextEditor = this.blurTextEditor;
+    window.disableInputImage = this.disableInputImage;
     // add blur event listener
     window.onblur = () => {
       this.postMessage(EventName.OnBlur, true);
@@ -132,6 +134,10 @@ class Editor extends React.Component<any, State> {
     }
   };
 
+  private disableInputImage = (disable: string) => {
+    this.disableImage = !!disable
+  }
+
   private checkContentIsChange = () => {
     if (this.contentIsChangeFlag) {
       return;
@@ -145,8 +151,14 @@ class Editor extends React.Component<any, State> {
 
   private onChange = (html: string, callback?: () => void) => {
     this.checkContentIsChange();
-    this.setState({ html }, () => {
-      this.postMessage(EventName.EditorChange, styleBase + html);
+
+    let newHtml = html
+    if(this.disableImage && html.includes('<img')) {
+      newHtml = this.state.html
+    }
+
+    this.setState({ html: newHtml }, () => {
+      this.postMessage(EventName.EditorChange, styleBase + newHtml);
       this.onActiveStyleChangeDebounce();
       this.onHeightChangeDebounce();
       this.onSelectionPositionChangeDebounce();
@@ -292,10 +304,10 @@ class Editor extends React.Component<any, State> {
   private setEditorPlaceholder = (placeholder: string) => {
     const quill = this.quillRef.current?.getEditor();
     if (quill) {
-      quill.root.dataset.placeholder = placeholder;
+      quill.root.dataset.placeholder = placeholder || '';
     } else {
       setTimeout(() => {
-        this.setEditorPlaceholder(placeholder);
+        this.setEditorPlaceholder(placeholder || '');
       }, 100);
     }
   };

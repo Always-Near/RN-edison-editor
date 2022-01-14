@@ -79,6 +79,7 @@ const InjectScriptName = {
   SetEditorPlaceholder: "setEditorPlaceholder",
   FocusTextEditor: "focusTextEditor",
   BlurTextEditor: "blurTextEditor",
+  DisableInputImage: 'disableInputImage',
 } as const;
 
 export type File = {
@@ -92,6 +93,7 @@ type PropTypes = {
   style?: ViewStyle;
   contentStyle?: React.CSSProperties;
   defaultValue?: string;
+  disableInputImage?: boolean;
   placeholder?: string;
   isDarkMode?: boolean;
   defaultFontSize?: number;
@@ -165,6 +167,10 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
         "base64"
       );
       this.executeScript(InjectScriptName.SetDefaultValue, formatHtml);
+    }
+
+    if(typeof nextProps.placeholder === 'string' && nextProps.placeholder !== this.props.placeholder) {
+      this.executeScript(InjectScriptName.SetEditorPlaceholder, nextProps.placeholder);
     }
   };
 
@@ -289,6 +295,7 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
 
     const {
       placeholder,
+      disableInputImage,
       defaultValue,
       contentStyle,
       isDarkMode = false,
@@ -309,6 +316,11 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
     if (placeholder) {
       this.executeScript(InjectScriptName.SetEditorPlaceholder, placeholder);
     }
+
+    if(disableInputImage) {
+      this.executeScript(InjectScriptName.DisableInputImage, '1');
+    }
+
     this.executeScript(InjectScriptName.SetIsDarkMode, isDarkMode.toString());
     if (defaultFontSize) {
       this.executeScript(
