@@ -135,8 +135,8 @@ class Editor extends React.Component<any, State> {
   };
 
   private disableInputImage = (disable: string) => {
-    this.disableImage = !!disable
-  }
+    this.disableImage = !!disable;
+  };
 
   private checkContentIsChange = () => {
     if (this.contentIsChangeFlag) {
@@ -151,14 +151,8 @@ class Editor extends React.Component<any, State> {
 
   private onChange = (html: string, callback?: () => void) => {
     this.checkContentIsChange();
-
-    let newHtml = html
-    if(this.disableImage && html.includes('<img')) {
-      newHtml = this.state.html
-    }
-
-    this.setState({ html: newHtml }, () => {
-      this.postMessage(EventName.EditorChange, styleBase + newHtml);
+    this.setState({ html }, () => {
+      this.postMessage(EventName.EditorChange, styleBase + html);
       this.onActiveStyleChangeDebounce();
       this.onHeightChangeDebounce();
       this.onSelectionPositionChangeDebounce();
@@ -288,7 +282,7 @@ class Editor extends React.Component<any, State> {
     try {
       const styleJson = JSON.parse(style);
       this.setState({ style: styleJson });
-    } catch (err) {
+    } catch (err: any) {
       console.log(err.message);
     }
   };
@@ -304,10 +298,10 @@ class Editor extends React.Component<any, State> {
   private setEditorPlaceholder = (placeholder: string) => {
     const quill = this.quillRef.current?.getEditor();
     if (quill) {
-      quill.root.dataset.placeholder = placeholder || '';
+      quill.root.dataset.placeholder = placeholder || "";
     } else {
       setTimeout(() => {
-        this.setEditorPlaceholder(placeholder || '');
+        this.setEditorPlaceholder(placeholder || "");
       }, 100);
     }
   };
@@ -363,11 +357,24 @@ class Editor extends React.Component<any, State> {
     );
   }
 
+  private formatHTML = (html: string) => {
+    if (!this.disableImage) {
+      return html;
+    }
+    const box = document.createElement("div");
+    box.innerHTML = html;
+    const images = box.querySelectorAll("img");
+    images.forEach((img) => {
+      img.parentNode?.removeChild(img);
+    });
+    return box.innerHTML;
+  };
+
   private matcherForTable = (node: Element, delta: Delta) => {
     return new Delta([
       {
         insert: {
-          table: node.innerHTML,
+          table: this.formatHTML(node.innerHTML),
         },
       },
     ]);
@@ -377,7 +384,7 @@ class Editor extends React.Component<any, State> {
     return new Delta([
       {
         insert: {
-          blockquote: node.innerHTML,
+          blockquote: this.formatHTML(node.innerHTML),
         },
       },
     ]);
@@ -401,6 +408,9 @@ class Editor extends React.Component<any, State> {
   };
 
   private matcherForImage = (node: Element, delta: Delta) => {
+    if (this.disableImage) {
+      return new Delta();
+    }
     const src = node.getAttribute("src");
     if (!src) {
       return new Delta();
