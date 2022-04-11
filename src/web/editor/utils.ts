@@ -6,6 +6,7 @@ import {
   SpecialKeepInlineStyles,
   BlockStyles,
   ClearStyle,
+  MaxIndent,
 } from "../../constants";
 
 const AllInline: string[] = [
@@ -40,7 +41,8 @@ function indent(quill: Quill, value: "+1" | "-1") {
   if (formats.direction === "rtl") {
     modifier *= -1;
   }
-  quill.format("indent", indent + modifier, "user");
+  const formatIndent = Math.max(Math.min(MaxIndent, indent + modifier), 0);
+  quill.format("indent", formatIndent, "user");
 }
 
 function list(quill: Quill, value: "ordered" | "bullet") {

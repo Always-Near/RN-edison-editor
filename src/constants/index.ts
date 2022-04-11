@@ -43,3 +43,5 @@ export type FormatType =
   | `${keyof typeof SpecialInlineStyles}-${string}`
   | `${keyof typeof SpecialKeepInlineStyles}-${string}`
   | keyof typeof BlockStyles;
+
+export const MaxIndent = 8;
