@@ -1,8 +1,8 @@
 import { Quill } from "react-quill";
+import { SignatureClassName } from "../../utils";
 
 const Default = Quill.import("blots/block");
 const ATTRIBUTES = ["id", "class"];
-export const SignatureClassName = "webmail_signature";
 
 class Signature extends Default {
   static create(value: any) {

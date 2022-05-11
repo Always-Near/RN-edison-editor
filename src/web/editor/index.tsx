@@ -19,6 +19,7 @@ import {
   EventListenerNames,
   format,
   getActiveStyles,
+  handleSignatureHTML,
 } from "./utils";
 
 type State = {
@@ -139,8 +140,9 @@ class Editor extends React.Component<any, State> {
 
   private onChange = (html: string, callback?: () => void) => {
     this.checkContentIsChange();
-    this.setState({ html }, () => {
-      this.postMessage(EventName.EditorChange, styleBase + html);
+    const formatHTML = handleSignatureHTML(html);
+    this.setState({ html: formatHTML }, () => {
+      this.postMessage(EventName.EditorChange, styleBase + formatHTML);
       this.onActiveStyleChangeDebounce();
       this.onHeightChangeDebounce();
       this.onSelectionPositionChangeDebounce();

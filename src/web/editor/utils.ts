@@ -207,3 +207,45 @@ export function clearHTML(html: string) {
     return html;
   }
 }
+
+export const SignatureClassName = "webmail_signature";
+
+const moveElementToNext = (element1: Element, element2: Element) => {
+  const childs = Array.from(element1.childNodes);
+  childs.forEach((item) => {
+    element2.appendChild(item.cloneNode(true));
+  });
+};
+
+export const handleSignatureHTML = (html: string) => {
+  const box = document.createElement("div");
+  box.innerHTML = html;
+  const allSignatureItems = box.querySelectorAll(`.${SignatureClassName}`);
+  if (allSignatureItems.length < 2) {
+    return html;
+  }
+  const pointFlag = document.createElement("div");
+  const pointFlagClassName = `${SignatureClassName}-point-flag`;
+  pointFlag.setAttribute("class", pointFlagClassName);
+  allSignatureItems[0].parentNode?.insertBefore(
+    pointFlag,
+    allSignatureItems[0]
+  );
+
+  const signature = document.createElement("div");
+  signature.setAttribute("class", SignatureClassName);
+  let handleElement: Element | null = allSignatureItems[0];
+  while (handleElement) {
+    moveElementToNext(handleElement, signature);
+    const next: Element | null = handleElement.nextElementSibling;
+    handleElement?.remove();
+    if (next && next.getAttribute("class") === SignatureClassName) {
+      handleElement = next;
+    } else {
+      handleElement = null;
+    }
+  }
+
+  pointFlag.parentNode?.replaceChild(signature, pointFlag);
+  return box.innerHTML;
+};
