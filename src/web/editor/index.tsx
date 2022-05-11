@@ -7,6 +7,7 @@ import _ from "underscore";
 import { EventName, FormatType } from "../../constants";
 import "./formats/block";
 import "./formats/blockquote";
+import "./formats/signature";
 import "./formats/image";
 import "./formats/table";
 import "./formats/title";
