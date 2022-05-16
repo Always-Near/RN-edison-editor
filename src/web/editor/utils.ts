@@ -217,7 +217,9 @@ const moveElementToNext = (element1: Element, element2: Element) => {
   });
 };
 
-export const handleSignatureHTML = (html: string) => {
+const styleBase = `<head><style>.ql-size-small{font-size:0.75em}.ql-size-large{font-size:1.5em}.ql-size-huge{font-size:2.5em}.ql-indent-1{padding-left:3em}.ql-indent-2{padding-left:6em}.ql-indent-3{padding-left:9em}.ql-indent-4{padding-left:12em}.ql-indent-5{padding-left:15em}.ql-indent-6{padding-left:18em}.ql-indent-7{padding-left:21em}.ql-indent-8{padding-left:24em}</style></head>`;
+
+const handleSignatureHTML = (html: string) => {
   const box = document.createElement("div");
   box.innerHTML = html;
   const allSignatureItems = box.querySelectorAll(`.${SignatureClassName}`);
@@ -248,4 +250,8 @@ export const handleSignatureHTML = (html: string) => {
 
   pointFlag.parentNode?.replaceChild(signature, pointFlag);
   return box.innerHTML;
+};
+
+export const quillToHTML = (html: string) => {
+  return styleBase + handleSignatureHTML(html);
 };

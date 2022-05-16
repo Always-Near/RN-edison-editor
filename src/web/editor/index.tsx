@@ -19,7 +19,7 @@ import {
   EventListenerNames,
   format,
   getActiveStyles,
-  handleSignatureHTML,
+  quillToHTML,
 } from "./utils";
 
 type State = {
@@ -40,8 +40,6 @@ const lightModeStyle = `
     background-color: #fffffe !important;
   }
 `;
-
-const styleBase = `<head><style>.ql-size-small{font-size:0.75em}.ql-size-large{font-size:1.5em}.ql-size-huge{font-size:2.5em}.ql-indent-1{padding-left:3em}.ql-indent-2{padding-left:6em}.ql-indent-3{padding-left:9em}.ql-indent-4{padding-left:12em}.ql-indent-5{padding-left:15em}.ql-indent-6{padding-left:18em}.ql-indent-7{padding-left:21em}.ql-indent-8{padding-left:24em}</style></head>`;
 
 const fontSizeStyle = (size: number) => {
   return `
@@ -140,9 +138,8 @@ class Editor extends React.Component<any, State> {
 
   private onChange = (html: string, callback?: () => void) => {
     this.checkContentIsChange();
-    const formatHTML = handleSignatureHTML(html);
-    this.setState({ html: formatHTML }, () => {
-      this.postMessage(EventName.EditorChange, styleBase + formatHTML);
+    this.setState({ html }, () => {
+      this.postMessage(EventName.EditorChange, quillToHTML(html));
       this.onActiveStyleChangeDebounce();
       this.onHeightChangeDebounce();
       this.onSelectionPositionChangeDebounce();
