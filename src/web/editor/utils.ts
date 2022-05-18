@@ -211,10 +211,9 @@ export function clearHTML(html: string) {
 export const SignatureClassName = "webmail_signature";
 
 const moveElementToNext = (element1: Element, element2: Element) => {
-  const childs = Array.from(element1.childNodes);
-  childs.forEach((item) => {
-    element2.appendChild(item.cloneNode(true));
-  });
+  element1.removeAttribute("class");
+  const cloneEle = element1.cloneNode(true);
+  element2.appendChild(cloneEle);
 };
 
 const styleBase = `<head><style>.ql-size-small{font-size:0.75em}.ql-size-large{font-size:1.5em}.ql-size-huge{font-size:2.5em}.ql-indent-1{padding-left:3em}.ql-indent-2{padding-left:6em}.ql-indent-3{padding-left:9em}.ql-indent-4{padding-left:12em}.ql-indent-5{padding-left:15em}.ql-indent-6{padding-left:18em}.ql-indent-7{padding-left:21em}.ql-indent-8{padding-left:24em}</style></head>`;
