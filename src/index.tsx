@@ -76,7 +76,7 @@ const InjectScriptName = {
   SetStyle: "setStyle",
   SetIsDarkMode: "setIsDarkMode",
   SetFontSize: "setFontSize",
-  SetEnablePadding: "setEnablePadding",
+  SetDisablePadding: "setDisablePadding",
   SetEditorPlaceholder: "setEditorPlaceholder",
   FocusTextEditor: "focusTextEditor",
   BlurTextEditor: "blurTextEditor",
@@ -98,7 +98,7 @@ type PropTypes = {
   placeholder?: string;
   isDarkMode?: boolean;
   defaultFontSize?: number;
-  enablePadding?: boolean;
+  disablePadding?: boolean;
   androidLayerType?: "none" | "software" | "hardware";
   onEditorReady?: () => void;
   onActiveStyleChange?: (styles: FormatType[]) => void;
@@ -162,12 +162,12 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
       );
     }
     if (
-      nextProps.enablePadding !== undefined &&
-      nextProps.enablePadding !== this.props.enablePadding
+      nextProps.disablePadding !== undefined &&
+      nextProps.disablePadding !== this.props.disablePadding
     ) {
       this.executeScript(
-        InjectScriptName.SetEnablePadding,
-        nextProps.enablePadding.toString()
+        InjectScriptName.SetDisablePadding,
+        nextProps.disablePadding.toString()
       );
     }
     if (
@@ -317,7 +317,7 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
       contentStyle,
       isDarkMode = false,
       defaultFontSize,
-      enablePadding,
+      disablePadding,
       onEditorReady = () => null,
     } = this.props;
 
@@ -346,10 +346,10 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
         defaultFontSize.toString()
       );
     }
-    if (enablePadding !== undefined) {
+    if (disablePadding !== undefined) {
       this.executeScript(
-        InjectScriptName.SetEnablePadding,
-        enablePadding.toString()
+        InjectScriptName.SetDisablePadding,
+        disablePadding.toString()
       );
     }
     onEditorReady();
