@@ -317,6 +317,7 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
       contentStyle,
       isDarkMode = false,
       defaultFontSize,
+      enablePadding,
       onEditorReady = () => null,
     } = this.props;
 
@@ -343,6 +344,12 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
       this.executeScript(
         InjectScriptName.SetFontSize,
         defaultFontSize.toString()
+      );
+    }
+    if (enablePadding !== undefined) {
+      this.executeScript(
+        InjectScriptName.SetEnablePadding,
+        enablePadding.toString()
       );
     }
     onEditorReady();
