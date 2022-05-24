@@ -27,6 +27,7 @@ type State = {
   style: React.CSSProperties;
   isDarkMode: boolean;
   fontSize: number;
+  enablePadding: boolean;
 };
 
 const darkModeStyle = `
@@ -49,6 +50,14 @@ const fontSizeStyle = (size: number) => {
 `;
 };
 
+const paddingStyle = (enablePadding: boolean) => {
+  return `
+  #root .ql-container .ql-editor{
+    padding: ${enablePadding ? "24px 28px" : 0};
+  }
+`;
+};
+
 const DefaultFontSize = 16;
 
 class Editor extends React.Component<any, State> {
@@ -66,6 +75,7 @@ class Editor extends React.Component<any, State> {
       style: {},
       isDarkMode: false,
       fontSize: DefaultFontSize,
+      enablePadding: true,
     };
     this.height = 0;
     this.selectionPosition = 0;
@@ -80,6 +90,7 @@ class Editor extends React.Component<any, State> {
     window.setStyle = this.setStyle;
     window.setIsDarkMode = this.setIsDarkMode;
     window.setFontSize = this.setFontSize;
+    window.setEnablePadding = this.setEnablePadding;
     window.setEditorPlaceholder = this.setEditorPlaceholder;
     window.focusTextEditor = this.focusTextEditor;
     window.blurTextEditor = this.blurTextEditor;
@@ -282,6 +293,10 @@ class Editor extends React.Component<any, State> {
     this.setState({ fontSize: parseInt(fontSize) || DefaultFontSize });
   };
 
+  private setEnablePadding = (enable: string) => {
+    this.setState({ enablePadding: enable === "true" });
+  };
+
   private setEditorPlaceholder = (placeholder: string) => {
     const quill = this.quillRef.current?.getEditor();
     if (quill) {
@@ -310,12 +325,13 @@ class Editor extends React.Component<any, State> {
   };
 
   render() {
-    const { html, style, isDarkMode, fontSize } = this.state;
+    const { html, style, isDarkMode, fontSize, enablePadding } = this.state;
     return (
       <>
         <style>
           {isDarkMode ? darkModeStyle : lightModeStyle}
           {fontSizeStyle(fontSize)}
+          {paddingStyle(enablePadding)}
         </style>
         <div
           className={`compose-editor ${isDarkMode ? "dark_mode" : ""}`}

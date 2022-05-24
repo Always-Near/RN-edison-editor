@@ -71,15 +71,16 @@ copyFile();
 const InjectScriptName = {
   Format: "format",
   AddImage: "addImage",
-  AddLink: 'addLink',
+  AddLink: "addLink",
   SetDefaultValue: "setDefaultValue",
   SetStyle: "setStyle",
   SetIsDarkMode: "setIsDarkMode",
   SetFontSize: "setFontSize",
+  SetEnablePadding: "setEnablePadding",
   SetEditorPlaceholder: "setEditorPlaceholder",
   FocusTextEditor: "focusTextEditor",
   BlurTextEditor: "blurTextEditor",
-  DisableInputImage: 'disableInputImage',
+  DisableInputImage: "disableInputImage",
 } as const;
 
 export type File = {
@@ -97,6 +98,7 @@ type PropTypes = {
   placeholder?: string;
   isDarkMode?: boolean;
   defaultFontSize?: number;
+  enablePadding?: boolean;
   androidLayerType?: "none" | "software" | "hardware";
   onEditorReady?: () => void;
   onActiveStyleChange?: (styles: FormatType[]) => void;
@@ -160,6 +162,15 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
       );
     }
     if (
+      nextProps.enablePadding !== undefined &&
+      nextProps.enablePadding !== this.props.enablePadding
+    ) {
+      this.executeScript(
+        InjectScriptName.SetEnablePadding,
+        nextProps.enablePadding.toString()
+      );
+    }
+    if (
       nextProps.defaultValue &&
       nextProps.defaultValue !== this.props.defaultValue
     ) {
@@ -169,8 +180,14 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
       this.executeScript(InjectScriptName.SetDefaultValue, formatHtml);
     }
 
-    if(typeof nextProps.placeholder === 'string' && nextProps.placeholder !== this.props.placeholder) {
-      this.executeScript(InjectScriptName.SetEditorPlaceholder, nextProps.placeholder);
+    if (
+      typeof nextProps.placeholder === "string" &&
+      nextProps.placeholder !== this.props.placeholder
+    ) {
+      this.executeScript(
+        InjectScriptName.SetEditorPlaceholder,
+        nextProps.placeholder
+      );
     }
   };
 
@@ -317,8 +334,8 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
       this.executeScript(InjectScriptName.SetEditorPlaceholder, placeholder);
     }
 
-    if(disableInputImage) {
-      this.executeScript(InjectScriptName.DisableInputImage, '1');
+    if (disableInputImage) {
+      this.executeScript(InjectScriptName.DisableInputImage, "1");
     }
 
     this.executeScript(InjectScriptName.SetIsDarkMode, isDarkMode.toString());
