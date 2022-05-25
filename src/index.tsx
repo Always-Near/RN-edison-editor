@@ -76,7 +76,7 @@ const InjectScriptName = {
   SetStyle: "setStyle",
   SetIsDarkMode: "setIsDarkMode",
   SetFontSize: "setFontSize",
-  SetDisablePadding: "setDisablePadding",
+  SetPadding: "setPadding",
   SetEditorPlaceholder: "setEditorPlaceholder",
   FocusTextEditor: "focusTextEditor",
   BlurTextEditor: "blurTextEditor",
@@ -98,7 +98,7 @@ type PropTypes = {
   placeholder?: string;
   isDarkMode?: boolean;
   defaultFontSize?: number;
-  disablePadding?: boolean;
+  padding?: { paddingVertical: number; paddingHorizontal: number };
   androidLayerType?: "none" | "software" | "hardware";
   onEditorReady?: () => void;
   onActiveStyleChange?: (styles: FormatType[]) => void;
@@ -162,12 +162,12 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
       );
     }
     if (
-      nextProps.disablePadding !== undefined &&
-      nextProps.disablePadding !== this.props.disablePadding
+      nextProps.padding !== undefined &&
+      nextProps.padding !== this.props.padding
     ) {
       this.executeScript(
-        InjectScriptName.SetDisablePadding,
-        nextProps.disablePadding.toString()
+        InjectScriptName.SetPadding,
+        this.calcPaddingPx(nextProps.padding)
       );
     }
     if (
@@ -287,6 +287,11 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
         return;
       }
       if (type === EventName.OnFocus && onFocus) {
+        if (Platform.OS === "android") {
+          // android must focus webview first
+          this.webViewRef.current?.requestFocus();
+          this.executeScript(InjectScriptName.FocusTextEditor);
+        }
         onFocus();
         return;
       }
@@ -317,7 +322,7 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
       contentStyle,
       isDarkMode = false,
       defaultFontSize,
-      disablePadding,
+      padding,
       onEditorReady = () => null,
     } = this.props;
 
@@ -346,10 +351,10 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
         defaultFontSize.toString()
       );
     }
-    if (disablePadding !== undefined) {
+    if (padding !== undefined) {
       this.executeScript(
-        InjectScriptName.SetDisablePadding,
-        disablePadding.toString()
+        InjectScriptName.SetPadding,
+        this.calcPaddingPx(padding)
       );
     }
     onEditorReady();
@@ -360,6 +365,16 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
         useNativeDriver: true,
       }).start();
     }, 200);
+  };
+
+  private calcPaddingPx = ({
+    paddingVertical,
+    paddingHorizontal,
+  }: {
+    paddingVertical: number;
+    paddingHorizontal: number;
+  }) => {
+    return `${paddingVertical}px ${paddingHorizontal}px`;
   };
 
   focus = () => {

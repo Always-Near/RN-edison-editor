@@ -7,7 +7,7 @@ declare interface Window {
   setStyle: (style: string) => void;
   setIsDarkMode: (style: string) => void;
   setFontSize: (fontSize: string) => void;
-  setDisablePadding: (disable: string) => void;
+  setPadding: (padding: string) => void;
   setEditorPlaceholder: (placeholder: string) => void;
   focusTextEditor: () => void;
   blurTextEditor: () => void;

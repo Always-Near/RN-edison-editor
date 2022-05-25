@@ -27,7 +27,7 @@ type State = {
   style: React.CSSProperties;
   isDarkMode: boolean;
   fontSize: number;
-  disablePadding: boolean;
+  padding: string;
 };
 
 const darkModeStyle = `
@@ -50,10 +50,10 @@ const fontSizeStyle = (size: number) => {
 `;
 };
 
-const paddingStyle = (disablePadding: boolean) => {
+const paddingStyle = (padding: string) => {
   return `
   #root .ql-container .ql-editor{
-    padding: ${disablePadding ? 0 : "24px 28px"};
+    padding: ${padding || "24px 28px"};
   }
 `;
 };
@@ -75,7 +75,7 @@ class Editor extends React.Component<any, State> {
       style: {},
       isDarkMode: false,
       fontSize: DefaultFontSize,
-      disablePadding: false,
+      padding: "",
     };
     this.height = 0;
     this.selectionPosition = 0;
@@ -90,7 +90,7 @@ class Editor extends React.Component<any, State> {
     window.setStyle = this.setStyle;
     window.setIsDarkMode = this.setIsDarkMode;
     window.setFontSize = this.setFontSize;
-    window.setDisablePadding = this.setDisablePadding;
+    window.setPadding = this.setPadding;
     window.setEditorPlaceholder = this.setEditorPlaceholder;
     window.focusTextEditor = this.focusTextEditor;
     window.blurTextEditor = this.blurTextEditor;
@@ -293,8 +293,8 @@ class Editor extends React.Component<any, State> {
     this.setState({ fontSize: parseInt(fontSize) || DefaultFontSize });
   };
 
-  private setDisablePadding = (disable: string) => {
-    this.setState({ disablePadding: disable === "true" });
+  private setPadding = (padding: string) => {
+    this.setState({ padding: padding });
   };
 
   private setEditorPlaceholder = (placeholder: string) => {
@@ -325,13 +325,13 @@ class Editor extends React.Component<any, State> {
   };
 
   render() {
-    const { html, style, isDarkMode, fontSize, disablePadding } = this.state;
+    const { html, style, isDarkMode, fontSize, padding } = this.state;
     return (
       <>
         <style>
           {isDarkMode ? darkModeStyle : lightModeStyle}
           {fontSizeStyle(fontSize)}
-          {paddingStyle(disablePadding)}
+          {paddingStyle(padding)}
         </style>
         <div
           className={`compose-editor ${isDarkMode ? "dark_mode" : ""}`}
