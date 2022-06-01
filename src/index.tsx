@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-import { ViewStyle, Animated, Platform, TextInput } from "react-native";
+import {
+  ViewStyle,
+  Animated,
+  Platform,
+  TextInput,
+  InteractionManager,
+} from "react-native";
 import WebView, {
   WebViewMessageEvent,
   WebViewProps,
@@ -377,14 +383,26 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
     return `${paddingVertical}px ${paddingHorizontal}px`;
   };
 
-  focus = () => {
-    this.doSomethingAfterMounted(`focusAndShowKeyboard`, () => {
-      if (Platform.OS === "android") {
-        // focus the textinput to wake up the keyborad
-        this.textInputRef.current?.focus();
-        // android must focus webview first
-        this.webViewRef.current?.requestFocus();
+  private focusSpecialHandleForSpecialPlatform = () => {
+    return new Promise<void>((resolve) => {
+      if (Platform.OS != "android") {
+        resolve();
       }
+      InteractionManager.runAfterInteractions(() => {
+        setTimeout(() => {
+          // focus the textinput to wake up the keyborad
+          this.textInputRef.current?.focus();
+          // android must focus webview first
+          this.webViewRef.current?.requestFocus();
+          resolve();
+        }, 200);
+      });
+    });
+  };
+
+  focus = () => {
+    this.doSomethingAfterMounted(`focusAndShowKeyboard`, async () => {
+      await this.focusSpecialHandleForSpecialPlatform();
       this.executeScript(InjectScriptName.FocusTextEditor);
     });
   };
@@ -393,8 +411,20 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
     this.executeScript(InjectScriptName.BlurTextEditor);
   };
 
+  private focusAfterChangeStyle = (style: FormatType) => {
+    // should focus in android to show the keyborard
+    if (Platform.OS != "android") {
+      return;
+    }
+    if (!style.startsWith("Color") && !style.startsWith("Size")) {
+      return;
+    }
+    this.focus();
+  };
+
   setStyle = (style: FormatType) => {
     this.executeScript(InjectScriptName.Format, style);
+    this.focusAfterChangeStyle(style);
   };
 
   addImage = (src: string) => {
