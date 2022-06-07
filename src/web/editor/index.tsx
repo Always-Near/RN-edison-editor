@@ -205,6 +205,10 @@ class Editor extends React.Component<any, State> {
 
   private onHeightChangeDebounce = _.debounce(this.onHeightChange, 100);
 
+  private clearSelectionPosition = () => {
+    this.selectionPosition = 0;
+  };
+
   private onSelectionPositionChange = () => {
     const quill = this.quillRef.current && this.quillRef.current.getEditor();
     if (!quill) {
@@ -318,10 +322,12 @@ class Editor extends React.Component<any, State> {
 
   private onFocus = () => {
     this.postMessage(EventName.OnFocus, true);
+    this.onSelectionPositionChangeDebounce();
   };
 
   private onBlur = () => {
     this.postMessage(EventName.OnBlur, true);
+    this.clearSelectionPosition();
   };
 
   render() {

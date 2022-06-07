@@ -400,6 +400,14 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
     });
   };
 
+  private blurSpecialHandleForSpecialPlatform = () => {
+    if (Platform.OS != "ios") {
+      return;
+    }
+    // focus the textinput to make the webview blur
+    this.textInputRef.current?.focus();
+  };
+
   focus = () => {
     this.doSomethingAfterMounted(`focusAndShowKeyboard`, async () => {
       await this.focusSpecialHandleForSpecialPlatform();
@@ -409,6 +417,7 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
 
   blur = () => {
     this.executeScript(InjectScriptName.BlurTextEditor);
+    this.blurSpecialHandleForSpecialPlatform();
   };
 
   private focusAfterChangeStyle = (style: FormatType) => {
@@ -447,6 +456,25 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
     return isDarkMode;
   };
 
+  // 1. https://easilydo.atlassian.net/browse/ON-3791
+  //    Keyboard behavior has an error by navigation go back to the current page when focus webview
+  //    so should focus elsewhere when navigat to another page
+  // 2. to show keyboard in android when focus webview
+  private renderSpecialHanldInput = () => {
+    return (
+      <TextInput
+        ref={this.textInputRef}
+        style={{
+          height: 0,
+          width: 0,
+          position: "absolute",
+          left: -1000,
+          backgroundColor: "transparent",
+        }}
+      />
+    );
+  };
+
   render() {
     const { style = { flex: 1 }, androidLayerType } = this.props;
     return (
@@ -467,18 +495,7 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
           forceDarkOn={this.shouldForceDarkOn()}
           androidLayerType={androidLayerType}
         />
-        {Platform.OS === "android" ? (
-          <TextInput
-            ref={this.textInputRef}
-            style={{
-              height: 0,
-              width: 0,
-              position: "absolute",
-              left: -1000,
-              backgroundColor: "transparent",
-            }}
-          />
-        ) : null}
+        {this.renderSpecialHanldInput()}
         <Animated.View
           style={{
             ...style,
