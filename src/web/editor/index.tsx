@@ -105,6 +105,9 @@ class Editor extends React.Component<any, State> {
         this.focusTextEditor();
       }, 200);
     };
+    window.onresize = () => {
+      this.onHeightChangeDebounce();
+    };
     // auto focus when click html
     document.addEventListener("click", (e) => {
       const clickDom = e.target as Element | null;
