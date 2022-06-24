@@ -235,10 +235,9 @@ class Editor extends React.Component<any, State> {
     this.postMessage(EventName.EditPosition, position);
   };
 
-  private specialHandleForKeyboard = () => {
+  private specialHandleForKeyboard = (pos: number) => {
     this.focusTextEditor();
-    this.postMessage(EventName.FocusForAndroid, true);
-    this.postMessage(EventName.EditPosition, this.selectionPosition);
+    this.postMessage(EventName.AfterFocusLeaveEditor, pos);
   };
 
   private setDefaultValue = (html: string) => {
@@ -396,7 +395,7 @@ class Editor extends React.Component<any, State> {
     format(quill, style);
     this.onActiveStyleChangeDebounce();
     if (style.startsWith("Color") || style.startsWith("Size")) {
-      this.specialHandleForKeyboard();
+      this.specialHandleForKeyboard(this.selectionPosition);
     }
   };
 
@@ -426,7 +425,7 @@ class Editor extends React.Component<any, State> {
     } else {
       quill.insertText(index, text, "link", url);
     }
-    this.specialHandleForKeyboard();
+    this.specialHandleForKeyboard(this.selectionPosition + this.state.fontSize);
   };
 
   private matcherForImage = (node: Element, delta: Delta) => {

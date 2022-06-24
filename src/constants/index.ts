@@ -8,7 +8,7 @@ export const EventName = {
   OnFocus: "onFocus",
   OnBlur: "onBlur",
   OnPastedImage: "onPastedImage",
-  FocusForAndroid: "focusForAndroid",
+  AfterFocusLeaveEditor: "afterFocusLeaveEditor",
 } as const;
 
 export const BaseInlineStyles = {

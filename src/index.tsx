@@ -5,6 +5,8 @@ import {
   Platform,
   TextInput,
   InteractionManager,
+  EmitterSubscription,
+  Keyboard,
 } from "react-native";
 import WebView, {
   WebViewMessageEvent,
@@ -89,11 +91,18 @@ const InjectScriptName = {
   DisableInputImage: "disableInputImage",
 } as const;
 
+const DoSometingAfterkeyboardDidShowItemDeadTime = 1000 * 10;
+
 export type File = {
   name: string;
   size: number;
   type: string;
   data: string;
+};
+
+type DoSometingAfterkeyboardDidShowItem = {
+  endTime: number;
+  func: () => void;
 };
 
 type PropTypes = {
@@ -130,6 +139,11 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
   private webViewRef = React.createRef<WebView>();
   private textInputRef = React.createRef<TextInput>();
   private maxCheckTime = 100;
+  private keyboardDidShowListener: EmitterSubscription | undefined;
+  private keyboardDidHideListener: EmitterSubscription | undefined;
+  private keyboardShow = false;
+  private doSometingAfterkeyboardDidShow: Array<DoSometingAfterkeyboardDidShowItem> =
+    [];
   loadingOpacity = new Animated.Value(1);
 
   constructor(props: any) {
@@ -143,7 +157,46 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
 
   componentDidMount() {
     this.getDraftJsFilePath();
+    this.keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      this.keyboardDidShow
+    );
+    this.keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      this.keyboardDidHide
+    );
   }
+
+  componentWillUnmount() {
+    this.keyboardDidShowListener?.remove();
+    this.keyboardDidHideListener?.remove();
+  }
+
+  keyboardDidShow = () => {
+    this.keyboardShow = true;
+    while (this.doSometingAfterkeyboardDidShow.length && this.keyboardShow) {
+      const doItem = this.doSometingAfterkeyboardDidShow.pop();
+      if (!doItem || doItem.endTime < Date.now()) {
+        continue;
+      }
+      doItem.func();
+    }
+  };
+
+  keyboardDidHide = () => {
+    this.keyboardShow = false;
+  };
+
+  private AddToDoSometingAfterkeyboardDidShow = (func: () => void) => {
+    if (this.keyboardShow) {
+      func();
+      return;
+    }
+    this.doSometingAfterkeyboardDidShow.push({
+      endTime: Date.now() + DoSometingAfterkeyboardDidShowItemDeadTime,
+      func: func,
+    });
+  };
 
   UNSAFE_componentWillReceiveProps = (nextProps: PropTypes) => {
     if (!this.webviewMounted) {
@@ -309,8 +362,8 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
         onPastedImage(data);
         return;
       }
-      if (type === EventName.FocusForAndroid) {
-        this.focusSpecialHandleForSpecialPlatform();
+      if (type === EventName.AfterFocusLeaveEditor) {
+        this.afterFocusLeaveEditor(data);
         return;
       }
     } catch (err) {}
@@ -385,6 +438,15 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
     paddingHorizontal: number;
   }) => {
     return `${paddingVertical}px ${paddingHorizontal}px`;
+  };
+
+  private afterFocusLeaveEditor = async (pos: number) => {
+    await this.focusSpecialHandleForSpecialPlatform();
+    this.AddToDoSometingAfterkeyboardDidShow(() => {
+      setTimeout(() => {
+        this.props.editPosition && this.props.editPosition(pos);
+      }, 500);
+    });
   };
 
   private focusSpecialHandleForSpecialPlatform = () => {
