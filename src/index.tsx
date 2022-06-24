@@ -309,6 +309,10 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
         onPastedImage(data);
         return;
       }
+      if (type === EventName.FocusForAndroid) {
+        this.focusSpecialHandleForSpecialPlatform();
+        return;
+      }
     } catch (err) {}
   };
 
@@ -387,6 +391,7 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
     return new Promise<void>((resolve) => {
       if (Platform.OS != "android") {
         resolve();
+        return;
       }
       InteractionManager.runAfterInteractions(() => {
         setTimeout(() => {
@@ -411,20 +416,8 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
     this.executeScript(InjectScriptName.BlurTextEditor);
   };
 
-  private focusAfterChangeStyle = (style: FormatType) => {
-    // should focus in android to show the keyborard
-    if (Platform.OS != "android") {
-      return;
-    }
-    if (!style.startsWith("Color") && !style.startsWith("Size")) {
-      return;
-    }
-    this.focus();
-  };
-
   setStyle = (style: FormatType) => {
     this.executeScript(InjectScriptName.Format, style);
-    this.focusAfterChangeStyle(style);
   };
 
   addImage = (src: string) => {

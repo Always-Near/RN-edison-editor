@@ -161,26 +161,6 @@ class Editor extends React.Component<any, State> {
     });
   };
 
-  private addLink = (str: string) => {
-    const { text, url } = JSON.parse(str);
-    this.blurTextEditor();
-    this.focusTextEditor();
-    const quill = this.quillRef.current && this.quillRef.current.getEditor();
-
-    if (!quill) {
-      return;
-    }
-
-    const range = quill.getSelection();
-    let index = 0;
-    if (range) {
-      index = range.index;
-      quill.insertText(index, text, "link", url);
-    } else {
-      quill.insertText(index, text, "link", url);
-    }
-  };
-
   private onChangeSelection = () => {
     this.onActiveStyleChangeDebounce();
     this.onSelectionPositionChangeDebounce();
@@ -253,6 +233,12 @@ class Editor extends React.Component<any, State> {
     }
     this.selectionPosition = position;
     this.postMessage(EventName.EditPosition, position);
+  };
+
+  private specialHandleForKeyboard = () => {
+    this.focusTextEditor();
+    this.postMessage(EventName.FocusForAndroid, true);
+    this.postMessage(EventName.EditPosition, this.selectionPosition);
   };
 
   private setDefaultValue = (html: string) => {
@@ -409,6 +395,9 @@ class Editor extends React.Component<any, State> {
     }
     format(quill, style);
     this.onActiveStyleChangeDebounce();
+    if (style.startsWith("Color") || style.startsWith("Size")) {
+      this.specialHandleForKeyboard();
+    }
   };
 
   private addImage = (path: string) => {
@@ -417,6 +406,27 @@ class Editor extends React.Component<any, State> {
       return;
     }
     addImage(quill, path);
+  };
+
+  private addLink = (str: string) => {
+    const { text, url } = JSON.parse(str);
+    this.blurTextEditor();
+    this.focusTextEditor();
+    const quill = this.quillRef.current && this.quillRef.current.getEditor();
+
+    if (!quill) {
+      return;
+    }
+
+    const range = quill.getSelection();
+    let index = 0;
+    if (range) {
+      index = range.index;
+      quill.insertText(index, text, "link", url);
+    } else {
+      quill.insertText(index, text, "link", url);
+    }
+    this.specialHandleForKeyboard();
   };
 
   private matcherForImage = (node: Element, delta: Delta) => {
