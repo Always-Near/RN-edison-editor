@@ -476,6 +476,8 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
 
   blur = () => {
     this.executeScript(InjectScriptName.BlurTextEditor);
+    this.textInputRef.current?.focus();
+    this.textInputRef.current?.blur();
   };
 
   setStyle = (style: FormatType) => {
@@ -522,18 +524,16 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
           forceDarkOn={this.shouldForceDarkOn()}
           androidLayerType={androidLayerType}
         />
-        {Platform.OS === "android" ? (
-          <TextInput
-            ref={this.textInputRef}
-            style={{
-              height: 0,
-              width: 0,
-              position: "absolute",
-              left: -1000,
-              backgroundColor: "transparent",
-            }}
-          />
-        ) : null}
+        <TextInput
+          ref={this.textInputRef}
+          style={{
+            height: 0,
+            width: 0,
+            position: "absolute",
+            left: -1000,
+            backgroundColor: "transparent",
+          }}
+        />
         <Animated.View
           style={{
             ...style,
