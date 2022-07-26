@@ -208,7 +208,7 @@ class Editor extends React.Component<any, State> {
       ?.getRangeAt(0)
       .getBoundingClientRect()?.bottom;
     if (pos) {
-      this.updateSelectionPosition(pos);
+      this.updateSelectionPosition(pos + window.scrollY);
       return;
     }
     // should catch new line events
@@ -219,7 +219,9 @@ class Editor extends React.Component<any, State> {
     if (selectElement.nodeType === Node.ELEMENT_NODE) {
       // should catch new line events
       const e = selectElement as Element;
-      this.updateSelectionPosition(e.getBoundingClientRect().bottom);
+      this.updateSelectionPosition(
+        e.getBoundingClientRect().bottom + window.scrollY
+      );
     }
   };
 
