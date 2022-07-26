@@ -11,6 +11,7 @@ import "./formats/signature";
 import "./formats/image";
 import "./formats/table";
 import "./formats/title";
+import "./attributes/strike";
 import "./styles.less";
 import {
   addImage,
