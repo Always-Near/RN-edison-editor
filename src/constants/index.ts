@@ -18,6 +18,13 @@ export const BaseInlineStyles = {
   Underline: "underline",
 } as const;
 
+export const BaseInlineStylesActiveValue = {
+  [BaseInlineStyles.Bold]: true,
+  [BaseInlineStyles.Italic]: true,
+  [BaseInlineStyles.Strikethrough]: "line-through",
+  [BaseInlineStyles.Underline]: true,
+} as const;
+
 export const SpecialInlineStyles = {
   BackgroundColor: "background",
   Link: "link",

@@ -2,6 +2,7 @@ import { Quill } from "react-quill";
 import {
   FormatType,
   BaseInlineStyles,
+  BaseInlineStylesActiveValue,
   SpecialInlineStyles,
   SpecialKeepInlineStyles,
   BlockStyles,
@@ -67,7 +68,10 @@ export function format(quill: Quill, style: FormatType) {
     if (key === style) {
       const formatType = BaseInlineStyles[key as keyof typeof BaseInlineStyles];
       const hasStyle = nowFormats[formatType];
-      quill.format(formatType, !hasStyle, "user");
+      const newValue = hasStyle
+        ? false
+        : BaseInlineStylesActiveValue[formatType];
+      quill.format(formatType, newValue, "user");
       return;
     }
   }
