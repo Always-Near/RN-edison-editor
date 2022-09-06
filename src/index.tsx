@@ -523,6 +523,7 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
           scrollEnabled={false}
           forceDarkOn={this.shouldForceDarkOn()}
           androidLayerType={androidLayerType}
+          mixedContentMode={"always"}
         />
         <TextInput
           ref={this.textInputRef}
