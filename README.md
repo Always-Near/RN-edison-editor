@@ -61,4 +61,4 @@ copy `index.tsx` change code to RN-edison-editor,
 
 ## Get Start
 
-[Get Start](./docs/doc/Getting-Started.md)
+[Get Start](./doc/Getting-Started.md)
