@@ -191,16 +191,50 @@ This method is triggered when the editor focus
 
 ## Methods
 
-### `goForward()`[⬆](#methods-index)
-
 ### `focus`[⬆](#methods-index)
+
+```
+focus()
+```
+
+To focus the webview and the editor
 
 ### `blur`[⬆](#methods-index)
 
+```
+blur()
+```
+
+To blur from the webview and the editor
+
 ### `setStyle`[⬆](#methods-index)
+
+```
+setStyle(style: "CLEAR" | "Bold" | "Italic" | "Strikethrough" | "Underline" | `BackgroundColor-${string}` | `Link-${string}` | `Color-${string}` | `Font-${string}` | `Size-${string}` | "IndentIncrease" | "IndentDecrease" | "UnorderedList" | "OrderedList")
+```
+
+Changes the style for the selected content in the editor
 
 ### `addImage`[⬆](#methods-index)
 
+```
+addImage(src: string)
+```
+
+Insert an inline image for the editor at the cursor position
+
 ### `addLink`[⬆](#methods-index)
 
+```
+addLink(text: string, url: string)
+```
+
+Insert a link for the editor at the cursor position
+
 ### `getEditorState`[⬆](#methods-index)
+
+```
+getEditorState()
+```
+
+Get the html for editor
