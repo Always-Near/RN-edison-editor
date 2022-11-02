@@ -58,3 +58,7 @@ copy `index.tsx` change code to RN-edison-editor,
 #### 4. publish
 
 `npm publish`
+
+## Get Start
+
+[Get Start](./docs/doc/Getting-Started.md)

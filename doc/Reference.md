@@ -2,34 +2,34 @@
 
 ## Props Index
 
-- [`style`](#style⬆)
-- [`contentStyle`](#contentStyle⬆)
-- [`defaultValue`](#defaultValue⬆)
-- [`disableInputImage`](#disableInputImage⬆)
-- [`placeholder`](#placeholder⬆)
-- [`isDarkMode`](#isDarkMode⬆)
-- [`defaultFontSize`](#defaultFontSize⬆)
-- [`padding`](#padding⬆)
-- [`androidLayerType`](#androidLayerType⬆)
-- [`onEditorReady`](#onEditorReady⬆)
-- [`onActiveStyleChange`](#onActiveStyleChange⬆)
-- [`onSizeChange`](#onSizeChange⬆)
-- [`editPosition`](#editPosition⬆)
-- [`onEditorChange`](#onEditorChange⬆)
-- [`onContentChange`](#onContentChange⬆)
-- [`onPastedImage`](#onPastedImage⬆)
-- [`onBlur`](#onBlur⬆)
-- [`onFocus`](#onFocus⬆)
-- [`onError`](#onError⬆)
+- [`style`](#style)
+- [`contentStyle`](#contentStyle)
+- [`defaultValue`](#defaultValue)
+- [`disableInputImage`](#disableInputImage)
+- [`placeholder`](#placeholder)
+- [`isDarkMode`](#isDarkMode)
+- [`defaultFontSize`](#defaultFontSize)
+- [`padding`](#padding)
+- [`androidLayerType`](#androidLayerType)
+- [`onEditorReady`](#onEditorReady)
+- [`onActiveStyleChange`](#onActiveStyleChange)
+- [`onSizeChange`](#onSizeChange)
+- [`editPosition`](#editPosition)
+- [`onEditorChange`](#onEditorChange)
+- [`onContentChange`](#onContentChange)
+- [`onPastedImage`](#onPastedImage)
+- [`onBlur`](#onBlur)
+- [`onFocus`](#onFocus)
+- [`onError`](#onError)
 
 ## Methods Index
 
-- [`focus`](#focus⬆)
-- [`blur`](#blur⬆)
-- [`setStyle`](#setStyle⬆)
-- [`addImage`](#addImage⬆)
-- [`addLink`](#addLink⬆)
-- [`getEditorState`](#getEditorState⬆)
+- [`focus`](#focus)
+- [`blur`](#blur)
+- [`setStyle`](#setStyle)
+- [`addImage`](#addImage)
+- [`addLink`](#addLink)
+- [`getEditorState`](#getEditorState)
 
 ---
 
@@ -96,8 +96,6 @@ set font size to fit system font zoom
 ### `padding`[⬆](#props-index)
 
 set padding for editor box in html
-
-24px 28
 
 | Type                                                     | Required | Default value                                    |
 | -------------------------------------------------------- | -------- | ------------------------------------------------ |
