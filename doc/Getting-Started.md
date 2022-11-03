@@ -13,4 +13,4 @@ class Test extends Component {
 }
 ```
 
-Next, check out the [API Reference](Reference.md)
+Next, check out the [API Reference](Reference.md) or [Code Logic](Code.md)
