@@ -59,6 +59,14 @@ copy `index.tsx` change code to RN-edison-editor,
 
 `npm run publish`
 
+### if you want change the quill package:
+
+#### 1. change the `node_modules/quill/dist/quill.js`
+
+#### 2. generate diff patches
+
+`npx patch-package quill`
+
 ## Get Start
 
 [Get Start](./doc/Getting-Started.md)
