@@ -1,6 +1,6 @@
 {
   "name": "rn-edison-editor",
-  "version": "0.1.60",
+  "version": "0.1.64",
   "description": "A full fledged React Native Rich Text editor based on quill.js",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -8,7 +8,8 @@
     "dev": "webpack serve -c ./config/webpack.dev.js",
     "dev-with-host": "webpack serve -c ./config/webpack.dev.js --host 0.0.0.0",
     "build": "rimraf lib && webpack -c ./config/webpack.pro.js && yarn tsc",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "publish": "clean-publish --fields scripts"
   },
   "homepage": "https://github.com/Always-Near/RN-edison-editor.git",
   "keywords": [
@@ -40,6 +41,7 @@
     "awesome-typescript-loader": "^5.2.1",
     "babel-loader": "^8.0.6",
     "buffer": "^6.0.0",
+    "clean-publish": "^4.0.1",
     "css-loader": "^5.0.1",
     "html-webpack-plugin": "^4.5.1",
     "less": "^4.1.0",

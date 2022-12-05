@@ -33,7 +33,7 @@ change the webviewUri to your local url: `http://localhost:8080` or `http://192.
 
 #### 5. publish
 
-`npm publish`
+`npm run publish`
 
 ---
 
@@ -57,7 +57,7 @@ copy `index.tsx` change code to RN-edison-editor,
 
 #### 4. publish
 
-`npm publish`
+`npm run publish`
 
 ## Get Start
 
