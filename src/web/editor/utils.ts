@@ -16,6 +16,52 @@ const AllInline: string[] = [
   ...Object.values(SpecialKeepInlineStyles),
 ];
 
+function testFormatForNode(element: Element, obj: Record<string, boolean>) {
+  if (element.tagName === "EM") {
+    obj["italic"] = true;
+  }
+  if (element.tagName === "U") {
+    obj["underline"] = true;
+  }
+  element.childNodes.forEach((n) => {
+    testFormatForNode(n as Element, obj);
+  });
+  return obj;
+}
+
+function getFormatPatch(
+  quill: Quill,
+  range:
+    | {
+        index: number;
+        length: number;
+      }
+    | undefined
+) {
+  const formats = quill.getFormat(range);
+  if (!range) {
+    return formats;
+  }
+  // To fix ON-735, the <br> tag is inserted when enter.
+  // This is to make the browser aware that the text has been breaked.
+  // The activated style is incorrect when multiple styles are nested.
+  // like: <strong><em></em><br></strong>
+  //       <strong><u></u><br></strong>
+  //       <strong><em><u></u></em><br></strong>
+  //       <em><u></u></em><br>
+  // So find the childs dom to avoid this bug
+  const blockInThere = quill.getLine(range.index)[0];
+  const formatIsClear = JSON.stringify(formats) === "{}";
+  if (!formatIsClear) {
+    blockInThere.children.forEach((child: any) => {
+      child.domNode.childNodes.forEach((n: Element) => {
+        testFormatForNode(n, formats);
+      });
+    });
+  }
+  return formats;
+}
+
 function clean(quill: Quill) {
   const range = quill.getSelection();
   if (!range) {
@@ -63,7 +109,7 @@ export function format(quill: Quill, style: FormatType) {
     return;
   }
   const range = quill.getSelection();
-  const nowFormats = quill.getFormat(range || undefined);
+  const nowFormats = getFormatPatch(quill, range || undefined);
   for (const key in BaseInlineStyles) {
     if (key === style) {
       const formatType = BaseInlineStyles[key as keyof typeof BaseInlineStyles];
@@ -123,7 +169,7 @@ export function getActiveStyles(quill: Quill | null) {
   if (!range) {
     return activeStyles;
   }
-  const formats = quill.getFormat(range);
+  const formats = getFormatPatch(quill, range);
   Object.keys(formats).forEach((key) => {
     const value = formats[key];
     if (!value) {
