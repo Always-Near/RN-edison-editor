@@ -1,4 +1,3 @@
-import { Buffer } from "buffer";
 import Delta from "quill-delta";
 import React, { createRef } from "react";
 import ReactQuill from "react-quill";
@@ -246,7 +245,7 @@ class Editor extends React.Component<any, State> {
   private setDefaultValue = (html: string) => {
     try {
       if (html) {
-        const htmlStr = Buffer.from(html, "base64").toString("utf-8");
+        const htmlStr = decodeURIComponent(html);
         // clear the meta to keep style
         const clearHtml = clearHTML(htmlStr);
         this.onChange(clearHtml, () => {

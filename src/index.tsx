@@ -13,7 +13,6 @@ import WebView, {
   WebViewProps,
 } from "react-native-webview";
 import RNFS from "react-native-fs";
-import { Buffer } from "buffer";
 import {
   WebViewErrorEvent,
   WebViewError,
@@ -233,9 +232,7 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
       nextProps.defaultValue &&
       nextProps.defaultValue !== this.props.defaultValue
     ) {
-      const formatHtml = Buffer.from(nextProps.defaultValue, "utf-8").toString(
-        "base64"
-      );
+      const formatHtml = encodeURIComponent(nextProps.defaultValue);
       this.executeScript(InjectScriptName.SetDefaultValue, formatHtml);
     }
 
@@ -291,7 +288,7 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
       }
       this.webViewRef.current.injectJavaScript(
         `window.${functionName} && window.${functionName}(${
-          parameter ? `'${parameter}'` : ""
+          parameter ? `\`${parameter}\`` : ""
         });true;`
       );
     });
@@ -390,7 +387,7 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
     } = this.props;
 
     if (defaultValue) {
-      const formatHtml = Buffer.from(defaultValue, "utf-8").toString("base64");
+      const formatHtml = encodeURIComponent(defaultValue);
       this.executeScript(InjectScriptName.SetDefaultValue, formatHtml);
     }
     if (contentStyle) {
