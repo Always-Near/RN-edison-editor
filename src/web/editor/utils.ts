@@ -249,7 +249,11 @@ export function clearHTML(html: string) {
     const allHead = doc.querySelectorAll("head");
     const allMeta = doc.querySelectorAll("meta");
     const allStyle = doc.querySelectorAll("style");
-    [...allHead, ...allMeta, ...allStyle].forEach((el) => {
+    const hiddenDom = [
+      ...doc.querySelectorAll('[style*="display: none"]'),
+      ...doc.querySelectorAll('[style*="display:none"]'),
+    ];
+    [...allHead, ...allMeta, ...allStyle, ...hiddenDom].forEach((el) => {
       el.remove();
     });
     return doc.body.innerHTML.trim();
