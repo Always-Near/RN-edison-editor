@@ -63,7 +63,6 @@ const DefaultFontSize = 16;
 class Editor extends React.Component<any, State> {
   private quillRef = createRef<ReactQuill>();
   private height: number;
-  private selectionPosition: number;
   private contentIsChangeFlag: boolean = false;
   private contentStartChangeFlag: boolean = false;
   private disableImage = false;
@@ -78,7 +77,6 @@ class Editor extends React.Component<any, State> {
       padding: "",
     };
     this.height = 0;
-    this.selectionPosition = 0;
   }
 
   componentDidMount() {
@@ -188,10 +186,6 @@ class Editor extends React.Component<any, State> {
 
   private onHeightChangeDebounce = _.debounce(this.onHeightChange, 100);
 
-  private clearSelectionPosition = () => {
-    this.selectionPosition = 0;
-  };
-
   private onSelectionPositionChange = () => {
     const quill = this.quillRef.current && this.quillRef.current.getEditor();
     if (!quill) {
@@ -230,16 +224,14 @@ class Editor extends React.Component<any, State> {
   );
 
   private updateSelectionPosition = (position: number) => {
-    if (position === this.selectionPosition) {
-      return;
-    }
-    this.selectionPosition = position;
     this.postMessage(EventName.EditPosition, position);
   };
 
-  private specialHandleForKeyboard = (pos: number) => {
+  private specialHandleForKeyboard = () => {
     this.focusTextEditor();
-    this.postMessage(EventName.AfterFocusLeaveEditor, pos);
+    setTimeout(() => {
+      this.onSelectionPositionChangeDebounce();
+    }, 300);
   };
 
   private setDefaultValue = (html: string) => {
@@ -317,7 +309,6 @@ class Editor extends React.Component<any, State> {
 
   private onBlur = () => {
     this.postMessage(EventName.OnBlur, true);
-    this.clearSelectionPosition();
   };
 
   render() {
@@ -397,7 +388,7 @@ class Editor extends React.Component<any, State> {
     format(quill, style);
     this.onActiveStyleChangeDebounce();
     if (style.startsWith("Color") || style.startsWith("Size")) {
-      this.specialHandleForKeyboard(this.selectionPosition);
+      this.specialHandleForKeyboard();
     }
   };
 
@@ -427,7 +418,7 @@ class Editor extends React.Component<any, State> {
     } else {
       quill.insertText(index, text, "link", url);
     }
-    this.specialHandleForKeyboard(this.selectionPosition + this.state.fontSize);
+    this.specialHandleForKeyboard();
   };
 
   private matcherForImage = (node: Element, delta: Delta) => {
