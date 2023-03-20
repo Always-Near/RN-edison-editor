@@ -474,6 +474,14 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
   blur = () => {
     this.textInputRef.current?.focus();
     this.textInputRef.current?.blur();
+    // to fix blur editor will pop up keyboard twice in tablet(ON-4651)
+    if (Platform.OS === "android") {
+      setTimeout(() => {
+        this.executeScript(InjectScriptName.BlurTextEditor);
+      }, 1000);
+    } else {
+      this.executeScript(InjectScriptName.BlurTextEditor);
+    }
   };
 
   setStyle = (style: FormatType) => {
@@ -526,8 +534,8 @@ class RNDraftView extends Component<PropTypes, DraftViewState> {
           style={{
             height: 0,
             width: 0,
-            margin: 0,
-            padding: 0,
+            position: "absolute",
+            left: -1000,
             backgroundColor: "transparent",
           }}
         />
