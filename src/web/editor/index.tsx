@@ -186,7 +186,7 @@ class Editor extends React.Component<any, State> {
 
   private onHeightChangeDebounce = _.debounce(this.onHeightChange, 100);
 
-  private onSelectionPositionChange = () => {
+  private getSelectionPosition = () => {
     const quill = this.quillRef.current && this.quillRef.current.getEditor();
     if (!quill) {
       return;
@@ -201,8 +201,7 @@ class Editor extends React.Component<any, State> {
       ?.getRangeAt(0)
       .getBoundingClientRect()?.bottom;
     if (pos) {
-      this.updateSelectionPosition(pos + window.scrollY);
-      return;
+      return pos + window.scrollY;
     }
     // should catch new line events
     const selectElement = window.getSelection()?.focusNode;
@@ -212,9 +211,14 @@ class Editor extends React.Component<any, State> {
     if (selectElement.nodeType === Node.ELEMENT_NODE) {
       // should catch new line events
       const e = selectElement as Element;
-      this.updateSelectionPosition(
-        e.getBoundingClientRect().bottom + window.scrollY
-      );
+      return e.getBoundingClientRect().bottom + window.scrollY;
+    }
+  };
+
+  private onSelectionPositionChange = () => {
+    const pos = this.getSelectionPosition();
+    if (pos) {
+      this.updateSelectionPosition(pos);
     }
   };
 
@@ -230,7 +234,8 @@ class Editor extends React.Component<any, State> {
   private specialHandleForKeyboard = () => {
     this.focusTextEditor();
     setTimeout(() => {
-      this.onSelectionPositionChangeDebounce();
+      const pos = this.getSelectionPosition();
+      this.postMessage(EventName.AfterFocusLeaveEditor, pos);
     }, 300);
   };
 
