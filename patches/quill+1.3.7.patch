@@ -1,8 +1,24 @@
 diff --git a/node_modules/quill/dist/quill.js b/node_modules/quill/dist/quill.js
-index 811b3d0..bfa112c 100644
+index 811b3d0..9ab7bbc 100644
 --- a/node_modules/quill/dist/quill.js
 +++ b/node_modules/quill/dist/quill.js
-@@ -4517,7 +4517,8 @@ var Keyboard = function (_Module) {
+@@ -1148,6 +1148,7 @@ var Quill = function () {
+     this.root = this.addContainer('ql-editor');
+     this.root.classList.add('ql-blank');
+     this.root.setAttribute('data-gramm', false);
++    this.root.setAttribute('inputmode', 'email');
+     this.scrollingContainer = this.options.scrollingContainer || this.root;
+     this.emitter = new _emitter4.default();
+     this.scroll = _parchment2.default.create(this.root, {
+@@ -1192,6 +1193,7 @@ var Quill = function () {
+       if (typeof container === 'string') {
+         var className = container;
+         container = document.createElement('div');
++        container.setAttribute('inputmode', 'email');
+         container.classList.add(className);
+       }
+       this.container.insertBefore(container, refNode);
+@@ -4517,7 +4519,8 @@ var Keyboard = function (_Module) {
        }
      });
      _this.addBinding({ key: Keyboard.keys.ENTER, shiftKey: null }, handleEnter);
@@ -12,7 +28,7 @@ index 811b3d0..bfa112c 100644
      if (/Firefox/i.test(navigator.userAgent)) {
        // Need to handle delete and backspace for Firefox in the general case #1171
        _this.addBinding({ key: Keyboard.keys.BACKSPACE }, { collapsed: true }, handleBackspace);
-@@ -4939,6 +4940,16 @@ function handleEnter(range, context) {
+@@ -4939,6 +4942,16 @@ function handleEnter(range, context) {
      if (name === 'link') return;
      _this3.quill.format(name, context.format[name], _quill2.default.sources.USER);
    });
