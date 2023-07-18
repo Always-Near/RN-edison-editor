@@ -1,4 +1,4 @@
-import { Quill } from "react-quill";
+import Quill from "quill";
 import { SignatureClassName } from "../../utils";
 
 const Default = Quill.import("blots/block");

@@ -1,4 +1,4 @@
-import { Quill } from "react-quill";
+import Quill from "quill";
 import { EventListener, EventListenerNames } from "../../utils";
 
 const DefaultImage = Quill.import("formats/image");

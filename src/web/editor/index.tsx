@@ -1,16 +1,16 @@
 import Delta from "quill-delta";
 import React, { createRef } from "react";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+import ReactQuill from "./component/ReactQuill";
+import "quill/dist/quill.snow.css";
 import _ from "underscore";
 import { EventName, FormatType } from "../../constants";
-import "./formats/block";
-import "./formats/blockquote";
-import "./formats/signature";
-import "./formats/image";
-import "./formats/table";
-import "./formats/title";
-import "./attributes/strike";
+// import "./formats/block";
+// import "./formats/blockquote";
+// import "./formats/signature";
+// import "./formats/image";
+// import "./formats/table";
+// import "./formats/title";
+// import "./attributes/strike";
 import "./styles.less";
 import {
   addImage,

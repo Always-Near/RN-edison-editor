@@ -1,4 +1,4 @@
-import { Quill } from "react-quill";
+import Quill from "quill";
 import {
   FormatType,
   BaseInlineStyles,
@@ -217,7 +217,7 @@ export const EventListenerNames = {
   ImgOnload: "ImgOnload",
 } as const;
 
-type Event = typeof EventListenerNames[keyof typeof EventListenerNames];
+type Event = (typeof EventListenerNames)[keyof typeof EventListenerNames];
 type Listener = () => void;
 
 class EdisonEventListener {
